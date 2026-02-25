@@ -2,14 +2,25 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+// NUEVO: Importaciones necesarias para manejar rutas
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+// NUEVO: Configuración de rutas para ESM (necesario por tu "type": "module")
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// NUEVO: Servir archivos estáticos
+// Esto busca el index.html en la carpeta raíz (un nivel arriba de /server)
+app.use(express.static(path.join(__dirname, '../')));
 
 // Configuración de Mercado Pago
 const client = new MercadoPagoConfig({
@@ -22,7 +33,8 @@ app.post('/create_preference', async (req, res) => {
 
         const protocol = req.headers['x-forwarded-proto'] || 'http';
         const host = req.headers.host;
-        const baseUrl = `${protocol}://${host.includes('localhost') ? 'localhost:5173' : host}`;
+        // Ajuste en baseUrl para que en Render apunte a la misma URL del servidor
+        const baseUrl = `${protocol}://${host}`;
 
         const body = {
             items: items.map(item => ({
@@ -55,6 +67,12 @@ app.post('/create_preference', async (req, res) => {
     }
 });
 
+// NUEVO: Ruta "Catch-all" para manejar el index.html
+// Esta es la línea que soluciona definitivamente el "Cannot GET /"
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../index.html'));
+});
+
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at port: ${port}`);
 });
