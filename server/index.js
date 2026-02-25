@@ -20,6 +20,10 @@ app.post('/create_preference', async (req, res) => {
     try {
         const { items } = req.body;
 
+        const protocol = req.headers['x-forwarded-proto'] || 'http';
+        const host = req.headers.host;
+        const baseUrl = `${protocol}://${host.includes('localhost') ? 'localhost:5173' : host}`;
+
         const body = {
             items: items.map(item => ({
                 id: item.id || item.cartId,
@@ -29,9 +33,9 @@ app.post('/create_preference', async (req, res) => {
                 currency_id: 'ARS',
             })),
             back_urls: {
-                success: 'http://localhost:5173/?status=success',
-                failure: 'http://localhost:5173/?status=failure',
-                pending: 'http://localhost:5173/?status=pending',
+                success: `${baseUrl}/?status=success`,
+                failure: `${baseUrl}/?status=failure`,
+                pending: `${baseUrl}/?status=pending`,
             },
             auto_return: 'approved',
         };
