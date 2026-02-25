@@ -2,13 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-// NUEVO: Importaciones necesarias para manejar rutas
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-// NUEVO: Configuración de rutas para ESM (necesario por tu "type": "module")
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
