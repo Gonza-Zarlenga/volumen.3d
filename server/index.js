@@ -68,7 +68,7 @@ app.post('/create_preference', async (req, res) => {
 
 // NUEVO: Ruta "Catch-all" para manejar el index.html
 // Esta es la línea que soluciona definitivamente el "Cannot GET /"
-app.get('*', (req, res) => {
+app.get('/:path*', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
 
