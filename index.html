@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOLUMEN | ORIGEN 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Tipografía: Be Vietnam Pro -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --orange: #e2892a;
+            --orange-hover: #c87911;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: black;
+            color: white;
+            background-image:
+                linear-gradient(to right, rgba(128, 128, 128, 0.399) 0.5px, transparent 1px),
+                linear-gradient(to bottom, rgba(128, 128, 128, 0.399) 0.5px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-orange {
+            background-color: var(--orange);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-orange:hover {
+            background-color: var(--orange-hover);
+            transform: translateY(-1px);
+        }
+
+        .product-card {
+            border: 1px solid var(--orange);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            box-shadow: 8px 8px 0px rgba(35, 35, 35, 0.05);
+        }
+
+        /* Barra de desplazamiento personalizada */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #000;
+        }
+
+        .cart-sidebar {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Carousel Styles */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .carousel-card {
+            flex: 0 0 300px;
+            scroll-snap-align: start;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-active {
+            display: block;
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.1);
+        }
+
+        .color-dot.active {
+            border: 2px solid #e5e5e5;
+        }
+
+        .thumbnail {
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .thumbnail:hover,
+        .thumbnail.active {
+            opacity: 1;
+        }
+
+        .payment-option {
+            border: 1px solid #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option.active {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .payment-option:hover:not(.active) {
+            /* background-color: #f8f8f8; */
+            background-color: #000;
+        }
+
+        .input-tech {
+            border: 1px solid #fff;
+            border-radius: 0;
+            padding: 12px;
+            font-size: 12px;
+            width: 100%;
+            outline: none;
+            font-family: 'JetBrains Mono', monospace;
+            background: transparent;
+        }
+
+        .input-tech:focus {
+            border-bottom: 3px solid var(--orange);
+            background: #000;
+        }
+
+        .filter-btn {
+            border-bottom: 2px solid transparent;
+            opacity: 0.5;
+            font-size: 16px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: #fff;
+            opacity: 1;
+        }
+
+        .container.catalog {
+            margin: 40px;
+            background-color: red;
+        }
+
+        /* Animaciones */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-orange {
+            background-color: var(--orange);
+            color: white;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-orange:hover {
+            background-color: var(--orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(75, 83, 32, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <!-- Mercado Pago SDK -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+</head>
+
+
+<body class="min-h-screen">
+
+    <!-- Navegación -->
+    <nav class="sticky top-0 z-40 bg-black border-b border-black px-6 py-4 flex justify-between items-center">
+        <div class="text-xl font-black tracking-tighter uppercase cursor-pointer" onclick="showView('home')">
+            VOLUMEN<span class="font-normal opacity-40 ml-1 text-sm">/ ORIGEN 3D</span>
+        </div>
+        <div class="flex items-center gap-8">
+            <div class="hidden md:flex gap-8 text-[10px] font-bold tracking-[0.2em] uppercase">
+                <a href="#" onclick="showView('about')" class="hover:text-[#e2892a] transition-colors">Estudio</a>
+                <a href="#footer" class="hover:text-[#e2892a] transition-colors">Info</a>
+                <!-- <a href="#" class="hover:text-[#e2892a] transition-colors">Custom</a> -->
+                <a href="#" onclick="document.getElementById('catalog').scrollIntoView({behavior: 'smooth'})"
+                    class="hover:text-[#e2892a] transition-colors">Tienda</a>
+            </div>
+            <button onclick="toggleCart()" class="relative group">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <path d="M3 6h18" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                <span id="cart-count"
+                    class="absolute -top-2 -right-2 bg-[#e2892a] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-black">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- VISTA: HOME (CATÁLOGO) -->
+    <div id="view-home" class="view-section view-active">
+        <header
+            class="px-6 py-32 border-b border-black flex flex-col items-center text-center bg-black relative overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
+                <svg width="100%" height="100%">
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+            </div>
+            <span
+                class="mono text-[9px] uppercase tracking-[0.4em] mb-6 text-gray-400 block border border-gray-200 px-3 py-1">Origen-3D</span>
+            <h1
+                class="text-[14vw] md:text-[12vw] font-black text-white-400 mb-8 tracking-tighter leading-none uppercase">
+                VOLUMEN
+            </h1>
+            <p class="max-w-md text-sm leading-relaxed text-gary-800 mb-10 font-medium">
+                Sistemas de iluminación y objetos decorativos. Ingeniería aplicada a la estética de la fabricación
+                aditiva.
+            </p>
+            <div class="flex gap-4">
+                <button onclick="document.getElementById('catalog').scrollIntoView({behavior: 'smooth'})"
+                    class="btn-orange px-12 py-4 font-bold uppercase tracking-widest text-[10px]">
+                    Explorar Stock
+                </button>
+            </div>
+        </header>
+
+        <!-- SECCIÓN: BEST SELLERS -->
+        <section class="py-24 border-b border-white bg-[#000]">
+            <div class="px-6 mb-12 flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-white uppercase tracking-tighter">Best Sellers</h2>
+                    <p class="mono text-[10px] text-gray-400 mt-2 uppercase tracking-widest">Los más buscados /
+                        Colección 2024</p>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        onclick="document.getElementById('best-sellers-scroll').scrollBy({left: -320, behavior: 'smooth'})"
+                        class="p-4 border border-white hover:bg-black over:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <line x1="19" y1="12" x2="5" y2="12" />
+                            <polyline points="12 19 5 12 12 5" />
+                        </svg>
+                    </button>
+                    <button
+                        onclick="document.getElementById('best-sellers-scroll').scrollBy({left: 320, behavior: 'smooth'})"
+                        class="p-4 border border-white hover:bg-black hover:text-white transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="best-sellers-scroll" class="flex gap-8 overflow-x-auto px-6 pb-12 no-scrollbar snap-x">
+                <!-- Se inyecta por JS -->
+            </div>
+        </section>
+
+        <main id="catalog" class="p-6 md:p-20">
+            <div
+                class="z-30 bg-black/95 backdrop-blur-md margin-left:20px margin-right:20px flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8 py-6 border-b border-black/5">
+                <div>
+                    <h2 class="text-4xl font-black uppercase tracking-tighter leading-none">Artifacts</h2>
+                    <p class="mono text-[10px] text-gray-400 mt-2">Disponibilidad de lote actual: PLA de Alta
+                        Precisión
+                    </p>
+                </div>
+                <div class="flex gap-8 text-[10px] font-bold uppercase tracking-widest">
+                    <button onclick="filterGrid('all', this)" class="filter-btn active pb-1">Todos</button>
+                    <button onclick="filterGrid('Iluminación', this)" class="filter-btn pb-1">Lámparas</button>
+                    <button onclick="filterGrid('Decoración', this)" class="filter-btn pb-1">Deco</button>
+                    <button onclick="filterGrid('Arte', this)" class="filter-btn pb-1">Art Toys</button>
+                </div>
+            </div>
+
+            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                <!-- Los productos se inyectan mediante JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- VISTA: ABOUT (ESTUDIO) -->
+    <div id="view-about" class="view-section">
+        <div class="p-6 md:p-20 max-w-7xl mx-auto">
+            <h2
+                class="text-[12vw] md:text-[8vw] font-black uppercase tracking-tighter leading-none mb-12 md:mb-24 text-center md:text-left">
+                ESTUDIO /<br><span class="text-gray-300">ORIGEN</span></h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32 items-start">
+                <div class="space-y-8">
+                    <p class="text-lg md:text-xl font-medium leading-relaxed">
+                        VOLUMEN no es solo una marca, es una exploración constante sobre la materialidad digital.
+                        Nacimos en la intersección entre la arquitectura paramétrica y la fabricación aditiva de
+                        precisión.
+                    </p>
+                    <p class="text-sm text-orange-400 leading-relaxed font-medium">
+                        Nuestro objetivo es democratizar el diseño de alta complejidad. Cada pieza es fabricada bajo
+                        demanda en nuestro laboratorio de Buenos Aires, utilizando biopolímeros sustentables (PLA+) y
+                        técnicas de post-procesado manual que garantizan un acabado de galería.
+                    </p>
+                    <p class="text-sm text-orange-400 leading-relaxed font-medium">
+                        Creemos en un futuro donde los objetos no se producen en masa, sino que se cultivan digitalmente
+                        capa por capa, adaptándose a las necesidades específicas de cada espacio y usuario.
+                    </p>
+                    <div class="pt-8">
+                        <img src="https://images.unsplash.com/photo-1631165686004-9442a842f10b?q=80&w=2787&auto=format&fit=crop"
+                            class="w-full grayscale hover:grayscale-0 transition-all duration-700">
+                        <p class="mono text-[10px] uppercase mt-2 text-gray-400">Taller de Prototipado / Buenos Aires,
+                            2024</p>
+                    </div>
+                </div>
+
+                <div class="space-y-12 sticky top-32">
+                    <img src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=80&w=2787&auto=format&fit=crop"
+                        class="aspect-[3/4] object-cover w-full grayscale hover:grayscale-0 transition-all duration-700">
+                    <div class="border-l border-black pl-6">
+                        <h3 class="font-black text-xl uppercase mb-2">Gonzalo Zarlenga</h3>
+                        <p class="mono text-[10px] uppercase tracking-widest text-gray-400 mb-4">Fundador / Director
+                            Creativo</p>
+                        <p class="text-xs leading-relaxed max-w-xs">Arquitecto y diseñador computacional. Especializado
+                            en morfogénesis digital y sistemas de fabricación distribuida.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA: DETALLE DE PRODUCTO -->
+    <div id="view-detail" class="view-section">
+        <div class="p-6 md:p-12">
+            <button onclick="showView('home')"
+                class="flex items-center gap-2 mb-12 text-[10px] font-black uppercase tracking-widest hover:text-[#4B5320] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                </svg>
+                Volver al Catálogo
+            </button>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                <div class="space-y-6">
+                    <div
+                        class="aspect-square bg-gray-50 border border-black overflow-hidden flex items-center justify-center relative">
+                        <img id="main-image" src="" alt="Detalle de Producto"
+                            class="w-full h-full object-cover mix-blend-multiply transition-opacity duration-300">
+                        <div id="image-code"
+                            class="absolute bottom-4 left-4 mono text-[10px] bg-black text-white px-4 py-1 uppercase tracking-widest font-bold">
+                            REF: 0000</div>
+                    </div>
+                    <div id="thumbnails-container" class="grid grid-cols-4 gap-4"></div>
+                </div>
+
+                <div class="flex flex-col">
+                    <span id="detail-category"
+                        class="mono text-[10px] text-gray-400 uppercase tracking-[0.3em] mb-4">Fabricación Aditiva /
+                        V.03 Build</span>
+                    <h2 id="detail-name" class="text-6xl font-black uppercase tracking-tighter leading-[0.85] mb-6">
+                        NOMBRE</h2>
+                    <p id="detail-desc" class="text-sm leading-relaxed text-gray-500 mb-10 font-medium">Descripción</p>
+                    <div id="detail-price" class="text-4xl font-black mb-12 tracking-tighter">$0</div>
+
+                    <div class="space-y-10 border-t border-black pt-10">
+                        <div>
+                            <label
+                                class="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-4">Seleccionar
+                                Color</label>
+                            <div class="flex gap-4">
+                                <div onclick="selectColor('Blanco', this)" class="color-dot bg-white active"
+                                    title="Blanco"></div>
+                                <div onclick="selectColor('Negro', this)" class="color-dot bg-black" title="Negro">
+                                </div>
+                                <div onclick="selectColor('Verde Militar', this)" class="color-dot bg-[#4B5320]"
+                                    title="Verde Militar"></div>
+                                <div onclick="selectColor('Gris Tech', this)" class="color-dot bg-[#808080]"
+                                    title="Gris Tech"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-4">Cantidad</label>
+                            <div class="flex items-center border border-black w-32 justify-between">
+                                <button onclick="changeQty(-1)"
+                                    class="p-3 hover:bg-black hover:text-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                                <span id="qty-value" class="font-black mono text-sm">1</span>
+                                <button onclick="changeQty(1)"
+                                    class="p-3 hover:bg-black hover:text-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-8 py-8 bg-gray-50 p-6 border border-gray-100">
+                            <div>
+                                <h4 class="mono text-[9px] uppercase font-bold text-gray-400 mb-1">Material</h4>
+                                <p id="detail-material" class="text-[10px] font-bold uppercase">PLA+ Industrial</p>
+                            </div>
+                            <div>
+                                <h4 class="mono text-[9px] uppercase font-bold text-gray-400 mb-1">Tiempo de Impresión
+                                </h4>
+                                <p id="detail-time" class="text-[10px] font-bold uppercase">14h 22m</p>
+                            </div>
+                            <div>
+                                <h4 class="mono text-[9px] uppercase font-bold text-gray-400 mb-1">Dimensiones</h4>
+                                <p id="detail-dims" class="text-[10px] font-bold uppercase">220 x 180 mm</p>
+                            </div>
+                            <div>
+                                <h4 class="mono text-[9px] uppercase font-bold text-gray-400 mb-1">Resolución</h4>
+                                <p class="text-[10px] font-bold uppercase">0.20 mm</p>
+                            </div>
+                        </div>
+
+                        <button id="add-to-cart-detail"
+                            class="btn-orange w-full py-6 text-xs font-black uppercase tracking-[0.3em]">Sumar al
+                            Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA: CHECKOUT (PAGOS) -->
+    <div id="view-checkout" class="view-section">
+        <div class="p-6 md:p-12 max-w-6xl mx-auto">
+            <h2 class="text-5xl font-black uppercase tracking-tighter mb-12">Checkout / <span
+                    class="text-gray-300">Pago</span></h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                <!-- Columna Izquierda: Datos y Pago -->
+                <div class="lg:col-span-2 space-y-12">
+                    <!-- Paso 1: Envío -->
+                    <section>
+                        <h3
+                            class="mono text-[11px] font-black uppercase mb-6 tracking-[0.2em] border-b border-whiteb-2">
+                            01 / Información de Envío</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" placeholder="NOMBRE COMPLETO" class="input-tech">
+                            <input type="email" placeholder="EMAIL" class="input-tech">
+                            <input type="text" placeholder="DIRECCIÓN" class="input-tech md:col-span-2">
+                            <input type="text" placeholder="CIUDAD" class="input-tech">
+                            <input type="text" placeholder="CÓDIGO POSTAL" class="input-tech">
+                        </div>
+                    </section>
+
+                    <!-- Paso 2: Método de Pago -->
+                    <section>
+                        <h3
+                            class="mono text-[11px] font-black uppercase mb-6 tracking-[0.2em] border-b border-white pb-2">
+                            02 / Selección de Pago</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            <div onclick="selectPayment('transfer', this)"
+                                class="payment-option p-6 flex flex-col items-center gap-3 active">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                                    <line x1="2" y1="10" x2="22" y2="10" />
+                                </svg>
+                                <span class="text-[10px] font-black uppercase">Transferencia</span>
+                            </div>
+                            <div onclick="selectPayment('card', this)"
+                                class="payment-option p-6 flex flex-col items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                                    <line x1="1" y1="10" x2="23" y2="10" />
+                                </svg>
+                                <span class="text-[10px] font-black uppercase">Tarjeta</span>
+                            </div>
+                            <div onclick="selectPayment('mercadopago', this)"
+                                class="payment-option p-6 flex flex-col items-center gap-3">
+                                <span class="font-black text-blue-500 italic">MP</span>
+                                <span class="text-[10px] font-black uppercase">Mercado Pago</span>
+                            </div>
+                        </div>
+
+                        <!-- Detalles Dinámicos de Pago -->
+                        <div id="payment-details-container" class="bg-gray-50 p-8 border border-gray-200">
+                            <!-- Transferencia (Default) -->
+                            <div id="details-transfer" class="payment-detail-block">
+                                <p class="text-xs font-bold uppercase mb-4">Datos de Transferencia:</p>
+                                <div class="mono text-[11px] space-y-2">
+                                    <p>BANCO: SANTANDER</p>
+                                    <p>ALIAS: VOLUMEN.ORIGEN.3D</p>
+                                    <p>CBU: 072000000000000000000</p>
+                                    <p class="text-gray-400 mt-4 italic">* Enviar comprobante por WhatsApp/Email.</p>
+                                </div>
+                            </div>
+
+                            <!-- Tarjeta -->
+                            <div id="details-card" class="payment-detail-block hidden space-y-4">
+                                <input type="text" placeholder="NÚMERO DE TARJETA" class="input-tech">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="text" placeholder="MM/YY" class="input-tech text-center">
+                                    <input type="text" placeholder="CVV" class="input-tech text-center">
+                                </div>
+                                <input type="text" placeholder="NOMBRE EN LA TARJETA" class="input-tech">
+                            </div>
+
+                            <!-- Mercado Pago -->
+                            <div id="details-mercadopago" class="payment-detail-block hidden text-center py-4">
+                                <p class="text-xs font-medium text-gray-500 mb-4">Serás redirigido a la plataforma
+                                    segura de Mercado Pago.</p>
+                                <div class="animate-pulse flex justify-center">
+                                    <div class="h-2 w-20 bg-blue-400"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Columna Derecha: Resumen de Orden -->
+                <div class="lg:col-span-1">
+                    <div class="border border-black p-8 sticky top-32">
+                        <h4 class="text-[10px] font-black uppercase tracking-widest mb-8 border-b border-black pb-2">
+                            Resumen de Orden</h4>
+                        <div id="checkout-items" class="space-y-4 mb-8"></div>
+                        <div class="space-y-2 border-t border-black pt-6">
+                            <div class="flex justify-between text-xs font-bold">
+                                <span>Subtotal</span>
+                                <span id="checkout-subtotal">$0</span>
+                            </div>
+                            <div class="flex justify-between text-xs font-bold">
+                                <span>Envío</span>
+                                <span>$1.500</span>
+                            </div>
+                            <div class="flex justify-between text-xl font-black mt-4 pt-4 border-t border-black">
+                                <span>Total</span>
+                                <span id="checkout-total">$0</span>
+                            </div>
+                        </div>
+                        <button onclick="processFinalPayment()"
+                            class="btn-orange w-full py-5 text-xs font-black uppercase tracking-[0.3em] mt-8">
+                            Confirmar y Pagar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA: SUCCESS (ÉXITO) -->
+    <div id="view-success" class="view-section h-[70vh]">
+        <div class="h-full flex flex-col items-center justify-center text-center p-6">
+            <div class="w-20 h-20 bg-[#4B5320] text-white flex items-center justify-center rounded-full mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+            </div>
+            <h2 class="text-4xl font-black uppercase tracking-tighter mb-4">Pedido Confirmado</h2>
+            <p class="mono text-[10px] text-gray-400 uppercase mb-8">Orden ID: #VL-2024-8832</p>
+            <p class="text-sm max-w-xs text-gray-500 mb-10">Gracias por elegir VOLUMEN. Te enviamos los detalles de
+                fabricación y seguimiento a tu email.</p>
+            <button onclick="showView('home')"
+                class="border border-black px-12 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                Volver a la Tienda
+            </button>
+        </div>
+    </div>
+
+    <!-- Carrito Lateral -->
+    <div id="cart-overlay" onclick="toggleCart()"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <aside id="cart-sidebar"
+        class="fixed top-0 right-0 h-full w-full md:w-[400px] bg-black border-l border-white z-50 p-10 transform translate-x-full cart-sidebar flex flex-col shadow-2xl">
+        <div class="flex justify-between items-center mb-12">
+            <div>
+                <h2 class="text-3xl font-black uppercase tracking-tighter">Carrito</h2>
+                <p class="mono text-[9px] text-gray-400 uppercase mt-1">Tu selección técnica</p>
+            </div>
+            <button onclick="toggleCart()" class="p-2 border border-red/10 hover:bg-red hover:text-red transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="cart-items-container" class="flex-grow overflow-y-auto space-y-8 pr-2">
+            <div class="flex flex-col items-center justify-center h-40 opacity-20">
+                <p class="mono text-[10px] uppercase font-bold">Vacío</p>
+            </div>
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-white">
+            <div class="flex justify-between items-end mb-8">
+                <span class="text-xs uppercase font-black">Total estimado</span>
+                <span id="cart-total" class="text-2xl font-black tracking-tighter">$0</span>
+            </div>
+            <button onclick="goToCheckout()"
+                class="btn-orange w-full py-5 text-[11px] font-black uppercase tracking-[0.3em]">
+                Finalizar Compra
+            </button>
+        </div>
+    </aside>
+
+    <!-- Footer -->
+    <footer id="footer"
+        class="p-10 md:p-20 border-t border-white bg-black flex flex-col md:flex-row justify-between items-start gap-16 mt-32">
+        <div class="max-w-xs">
+            <div class="text-2xl font-black tracking-tighter mb-6 uppercase">VOLUMEN</div>
+            <p class="text-xs text-gray-400 leading-relaxed font-medium">Laboratorio de diseño y producción 3D enfocado
+                en la síntesis entre forma y función industrial.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-16 md:gap-32 w-full md:w-auto">
+            <div>
+                <h4 class="mono text-[9px] uppercase font-black text-gray-300 mb-6 tracking-widest">Navegación</h4>
+                <ul class="text-[11px] space-y-3 uppercase font-bold tracking-tight">
+                    <li><a href="#" class="hover:text-[#e2892a]">Proyectos</a></li>
+                    <li><a href="#" class="hover:text-[#e2892a]">Shop</a></li>
+                    <li><a href="#" class="hover:text-[#e2892a]">Custom</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="mono text-[9px] uppercase font-black text-gray-300 mb-6 tracking-widest">Social</h4>
+                <ul class="text-[11px] space-y-3 uppercase font-bold tracking-tight">
+                    <li><a href="#" class="hover:text-[#e2892a]">Instagram</a></li>
+                    <li><a href="#" class="hover:text-[#e2892a]">Behance</a></li>
+                </ul>
+            </div>
+            <div class="col-span-2 md:col-span-1">
+                <h4 class="mono text-[9px] uppercase font-black text-gray-300 mb-6 tracking-widest">Newsletter</h4>
+                <div class="flex border-b border-white pb-2">
+                    <input type="email" placeholder="EMAIL"
+                        class="bg-transparent text-[10px] w-full outline-none font-bold uppercase">
+                    <button class="text-[10px] font-black">OK</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer para animaciones al scrollear
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    console.log("Element revealing:", entry.target.tagName, entry.target.className);
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        function initAnimations() {
+            const elements = document.querySelectorAll('h1, h2, p, .product-card, .carousel-card, img, button:not(.filter-btn), input');
+            elements.forEach(el => {
+                // Solo agregar si no tiene la clase reveal para evitar que desaparezcan al refrescar el grid
+                if (!el.classList.contains('reveal') && !el.classList.contains('active')) {
+                    el.classList.add('reveal');
+                    observer.observe(el);
+                }
+            });
+        }
+
+        function renderBestSellers() {
+            const container = document.getElementById('best-sellers-scroll');
+            if (!container) return;
+
+            // Simulamos los "más vendidos" tomando algunos productos
+            const bestSellersIds = ['nova', 'aurum', 'lava', 'nova', 'lava', 'nova']; // Repetimos uno para llenar espacio si hay pocos
+
+            container.innerHTML = bestSellersIds.map(id => {
+                const prod = products[id];
+                return `
+                    <div class="carousel-card bg-white border border-black p-6 group cursor-pointer hover:shadow-xl transition-all duration-500" onclick="openProduct('${id}')">
+                        <div class="aspect-square bg-gray-50 mb-6 overflow-hidden flex items-center justify-center relative">
+                            <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-70 group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-0 right-0 bg-[#4B5320] text-white text-[8px] px-3 py-1 font-black uppercase tracking-widest">Top Sold</div>
+                        </div>
+                        <h3 class="font-black text-lg uppercase tracking-tighter mb-1">${prod.name}</h3>
+                        <p class="mono text-[10px] text-gray-400 uppercase mb-4">${prod.category}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-black text-sm">$${prod.price.toLocaleString()}</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 group-hover:text-[#4B5320] group-hover:border-[#4B5320] transition-colors">Ver Producto</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const products = {
+            'nova': {
+                id: 'nova',
+                name: 'Nova Lamp',
+                price: 35000,
+                category: 'Iluminación',
+                desc: 'Iluminación paramétrica de alta precisión. Estructura optimizada para difusión de luz suave.',
+                material: 'PLA+ REFORZADO',
+                time: '18H 45M',
+                dims: '240 x 180 mm',
+                code: 'LMP-01',
+                images: ['/products/nova-1.jpg', '/products/nova-2.jpg', '/products/nova-3.jpg']
+            },
+            'aurum': {
+                id: 'aurum',
+                name: 'Aurum Sculpture',
+                price: 12500,
+                category: 'Arte / Colección',
+                desc: 'Objeto de culto coleccionable. Terminación artesanal sobre base de impresión 3D.',
+                material: 'MATTE POLYMER',
+                time: '08H 12M',
+                dims: '120 x 120 mm',
+                code: 'TOY-05',
+                images: ['/products/aurum-1.jpg', '/products/aurum-2.jpg']
+            },
+            'lava': {
+                id: 'lava',
+                name: 'Lava Vase',
+                price: 8900,
+                category: 'Decoración',
+                desc: 'Textura orgánica generativa. Impermeable y resistente al impacto.',
+                material: 'PLA+ INDUSTRIAL',
+                time: '06H 20M',
+                dims: '180 x 100 mm',
+                code: 'OBJ-09',
+                images: ['/products/lava-1.jpg', '/products/lava-2.jpg']
+            },
+            'caca': {
+                id: 'caca',
+                name: 'Organic Piece',
+                price: 8900,
+                category: 'Decoración',
+                desc: 'Textura orgánica generativa. Impermeable y resistente al impacto.',
+                material: 'PLA+ INDUSTRIAL',
+                time: '06H 20M',
+                dims: '180 x 100 mm',
+                code: 'OBJ-10',
+                images: ['/products/piece-1.jpg']
+            }
+        };
+
+        let cart = [];
+        let currentProduct = null;
+        let selectedQty = 1;
+        let selectedColor = 'Blanco';
+        let currentPayment = 'transfer';
+
+        function renderGrid(filter = 'all') {
+            console.log("--- renderGrid Start ---");
+            console.log("Filter:", filter);
+            const grid = document.getElementById('products-grid');
+            if (!grid) {
+                console.error("CRITICAL: Grid element 'products-grid' not found in DOM.");
+                return;
+            }
+
+            const entries = Object.entries(products).filter(([id, prod]) => {
+                if (filter === 'all') return true;
+                if (filter === 'Decoración') return prod.category.includes('Decoración') || prod.category.includes('Arte');
+                return prod.category.includes(filter);
+            });
+            console.log("Entries to render:", entries.length);
+
+            grid.innerHTML = entries.map(([id, prod], index) => `
+                <div id="product-card-${id}" class="product-card p-8 flex flex-col bg-white" style="transition-delay: ${index * 100}ms" onclick="openProduct('${id}')">
+                    <div class="aspect-square bg-gray-50 mb-8 relative overflow-hidden flex items-center justify-center group">
+                        <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-70 grayscale group-hover:grayscale-0 transition-all duration-500">
+                        <div class="absolute top-0 left-0 mono text-[9px] bg-black text-white px-3 py-1 uppercase tracking-widest font-bold">${prod.code}</div>
+                    </div>
+                    <div class="flex justify-between items-baseline mb-3">
+                        <h3 class="font-black text-xl uppercase tracking-tighter">${prod.name}</h3>
+                        <span class="mono font-bold text-sm">$${prod.price.toLocaleString()}</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6 italic">${prod.category}</p>
+                    
+                    <div class="mt-auto flex flex-col gap-3">
+                        <button class="btn-orange py-4 text-[10px] font-black uppercase tracking-[0.2em] w-full" 
+                                onclick="event.stopPropagation(); openProduct('${id}')">
+                            Ver Detalles
+                        </button>
+                        <button class="text-black border border-black py-4 text-[10px] font-black uppercase tracking-[0.2em] w-full hover:bg-black hover:text-white transition-all duration-300" 
+                                onclick="event.stopPropagation(); addToCart('${prod.name}', ${prod.price}, 1, 'Blanco')">
+                            Añadir al Carrito
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            console.log("HTML injected into grid.");
+            initAnimations();
+        }
+
+        function filterGrid(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGrid(category);
+        }
+
+        function showView(view) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
+            document.getElementById(`view-${view}`).classList.add('view-active');
+            window.scrollTo(0, 0);
+        }
+
+        function openProduct(id) {
+            const prod = products[id];
+            currentProduct = prod;
+            selectedQty = 1;
+            selectedColor = 'Blanco';
+
+            document.getElementById('detail-name').innerText = prod.name;
+            document.getElementById('detail-desc').innerText = prod.desc;
+            document.getElementById('detail-category').innerText = `Categoría: ${prod.category} / V.03 Build`;
+            document.getElementById('detail-price').innerText = `$${prod.price.toLocaleString()}`;
+            document.getElementById('detail-material').innerText = prod.material;
+            document.getElementById('detail-time').innerText = prod.time;
+            document.getElementById('detail-dims').innerText = prod.dims;
+            document.getElementById('image-code').innerText = `REF: ${prod.code}`;
+            document.getElementById('qty-value').innerText = selectedQty;
+
+            const mainImg = document.getElementById('main-image');
+            mainImg.src = prod.images[0];
+
+            const thumbContainer = document.getElementById('thumbnails-container');
+            thumbContainer.innerHTML = prod.images.map((img, index) => `
+                <div onclick="updateMainImage('${img}', this)" class="thumbnail border border-black aspect-square bg-gray-50 overflow-hidden ${index === 0 ? 'active' : ''}">
+                    <img src="${img}" class="w-full h-full object-cover mix-blend-multiply">
+                </div>
+            `).join('');
+
+            document.getElementById('add-to-cart-detail').onclick = () => {
+                addToCart(prod.name, prod.price, selectedQty, selectedColor);
+            };
+
+            showView('detail');
+        }
+
+        function updateMainImage(src, thumbEl) {
+            const mainImg = document.getElementById('main-image');
+            mainImg.style.opacity = '0';
+            setTimeout(() => {
+                mainImg.src = src;
+                mainImg.style.opacity = '1';
+            }, 200);
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumbEl.classList.add('active');
+        }
+
+        function selectColor(color, el) {
+            selectedColor = color;
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function changeQty(val) {
+            selectedQty = Math.max(1, selectedQty + val);
+            document.getElementById('qty-value').innerText = selectedQty;
+        }
+
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cart-sidebar');
+            const cartOverlay = document.getElementById('cart-overlay');
+            const isOpen = !cartSidebar.classList.contains('translate-x-full');
+            if (isOpen) {
+                cartSidebar.classList.add('translate-x-full');
+                cartOverlay.classList.add('hidden');
+                cartOverlay.classList.remove('opacity-100');
+            } else {
+                cartSidebar.classList.remove('translate-x-full');
+                cartOverlay.classList.remove('hidden');
+                setTimeout(() => cartOverlay.classList.add('opacity-100'), 10);
+            }
+        }
+
+        function addToCart(name, price, qty = 1, color = 'N/A') {
+            const cartId = `${name}-${color}`;
+            const existingItem = cart.find(item => item.cartId === cartId);
+            if (existingItem) {
+                existingItem.qty += qty;
+            } else {
+                cart.push({ cartId, name, price, qty, color });
+            }
+            renderCart();
+            toggleCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.cartId !== id);
+            renderCart();
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-20"><p class="mono text-[10px] uppercase font-bold">Vacío</p></div>';
+                cartCount.innerText = '0';
+                cartTotal.innerText = '$0';
+                return;
+            }
+
+            let total = 0;
+            let count = 0;
+
+            container.innerHTML = cart.map(item => {
+                total += item.price * item.qty;
+                count += item.qty;
+                return `
+                    <div class="flex gap-6 items-start pb-8 border-b border-gray-100 last:border-0">
+                        <div class="w-16 h-16 bg-gray-50 flex-shrink-0 flex items-center justify-center relative border border-gray-100">
+                             <div class="absolute -top-1 -left-1 bg-black text-[8px] text-white px-1 font-bold mono">x${item.qty}</div>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start">
+                                <h4 class="text-[11px] font-black uppercase tracking-tight leading-tight mb-1">${item.name}</h4>
+                                <button onclick="removeFromCart('${item.cartId}')" class="text-gray-300 hover:text-black">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                            <p class="mono text-[9px] text-gray-400 uppercase">COLOR: ${item.color}</p>
+                            <p class="text-xs font-black mt-3">$${(item.price * item.qty).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            cartCount.innerText = count;
+            cartTotal.innerText = '$' + total.toLocaleString();
+        }
+
+        // Nuevas funciones de Checkout
+        function selectPayment(method, el) {
+            currentPayment = method;
+            document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.payment-detail-block').forEach(b => b.classList.add('hidden'));
+            document.getElementById(`details-${method}`).classList.remove('hidden');
+        }
+
+        function goToCheckout() {
+            if (cart.length === 0) return;
+            toggleCart();
+            renderCheckout();
+            showView('checkout');
+        }
+
+        function renderCheckout() {
+            let subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            document.getElementById('checkout-subtotal').innerText = `$${subtotal.toLocaleString()}`;
+            document.getElementById('checkout-total').innerText = `$${(subtotal + 1500).toLocaleString()}`;
+            document.getElementById('checkout-items').innerHTML = cart.map(i => `
+                <div class="flex justify-between text-[10px] mono uppercase">
+                    <span>${i.qty}x ${i.name}</span>
+                    <span>$${(i.price * i.qty).toLocaleString()}</span>
+                </div>
+            `).join('');
+        }
+
+        async function processFinalPayment() {
+            const btn = document.querySelector('#view-checkout .btn-orange');
+            const originalText = btn.innerText;
+
+            if (currentPayment === 'mercadopago') {
+                btn.innerText = "REDIRECCIONANDO...";
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch('http://localhost:3001/create_preference', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ items: cart }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.details || 'Error en la respuesta del servidor');
+                    }
+
+                    const preference = await response.json();
+
+                    if (!preference.id) {
+                        throw new Error('No se recibió un ID de preferencia válido de Mercado Pago');
+                    }
+
+                    const mp = new MercadoPago('APP_USR-4546c1d5-aa74-459f-b2f9-a53078b94d60', {
+                        locale: 'es-AR'
+                    });
+
+                    mp.checkout({
+                        preference: {
+                            id: preference.id
+                        },
+                        autoOpen: true
+                    });
+
+                } catch (error) {
+                    console.error('Error in Mercado Pago:', error);
+                    alert('Error al iniciar el pago con Mercado Pago. Por favor, intenta de nuevo.');
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+                return;
+            }
+
+            btn.innerText = "PROCESANDO...";
+            btn.disabled = true;
+
+            // Simular proceso de red o validación para otros métodos
+            setTimeout(() => {
+                cart = [];
+                renderCart();
+                showView('success');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOMContentLoaded event Fired");
+            renderGrid();
+            renderBestSellers();
+
+            // Manejar retorno de Mercado Pago
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            if (status === 'success') {
+                cart = [];
+                renderCart();
+                showView('success');
+            } else if (status === 'failure') {
+                alert('El pago no pudo procesarse. Por favor, intenta de nuevo.');
+                showView('checkout');
+            }
+        });
+
+        // Fallback for safety
+        window.onload = () => {
+            console.log("Window Load event Fired");
+            const grid = document.getElementById('products-grid');
+            if (grid && !grid.children.length) {
+                console.log("Grid empty on window load, rendering...");
+                renderGrid();
+            }
+        };
+    </script>
+</body>
+
+</html>
