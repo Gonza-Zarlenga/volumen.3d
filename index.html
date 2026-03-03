@@ -16,15 +16,19 @@
         :root {
             --orange: #e2892a;
             --orange-hover: #c87911;
+            --bg-dark: #000000;
+            --bg-white: #ffffff;
+            --text-main: #ffffff;
+            --text-dim: #a1a1aa;
         }
 
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: black;
-            color: white;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             background-image:
-                linear-gradient(to right, rgba(128, 128, 128, 0.399) 0.5px, transparent 1px),
-                linear-gradient(to bottom, rgba(128, 128, 128, 0.399) 0.5px, transparent 1px);
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 0.5px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0.5px, transparent 1px);
             background-size: 40px 40px;
         }
 
@@ -162,7 +166,8 @@
 
         .filter-btn:hover,
         .filter-btn.active {
-            border-color: #fff;
+            border-color: var(--orange);
+            color: var(--orange);
             opacity: 1;
         }
 
@@ -200,6 +205,40 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Botón Flotante WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1) rotate(5deg);
+            background-color: #128c7e;
+        }
+
+        @media screen and (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+        }
     </style>
     <!-- Mercado Pago SDK -->
     <script src="https://sdk.mercadopago.com/js/v2"></script>
@@ -229,7 +268,7 @@
                     <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
                 <span id="cart-count"
-                    class="absolute -top-2 -right-2 bg-[#e2892a] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-black">0</span>
+                    class="absolute -top-2 -right-2 bg-white text-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-black">0</span>
             </button>
         </div>
     </nav>
@@ -272,7 +311,7 @@
                 <div class="flex gap-2">
                     <button
                         onclick="document.getElementById('best-sellers-scroll').scrollBy({left: -320, behavior: 'smooth'})"
-                        class="p-4 border border-white hover:bg-black over:text-white transition-all">
+                        class="p-4 border border-white hover:bg-white hover:text-black transition-all">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2.5">
                             <line x1="19" y1="12" x2="5" y2="12" />
@@ -324,23 +363,29 @@
         <div class="p-6 md:p-20 max-w-7xl mx-auto">
             <h2
                 class="text-[12vw] md:text-[8vw] font-black uppercase tracking-tighter leading-none mb-12 md:mb-24 text-center md:text-left">
-                ESTUDIO /<br><span class="text-gray-300">ORIGEN</span></h2>
+                ESTUDIO /<br><span class="text-white/40">ORIGEN</span></h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32 items-start">
                 <div class="space-y-8">
                     <p class="text-lg md:text-xl font-medium leading-relaxed">
-                        VOLUMEN no es solo una marca, es una exploración constante sobre la materialidad digital.
-                        Nacimos en la intersección entre la arquitectura paramétrica y la fabricación aditiva de
-                        precisión.
+                        VOLUMEN nació de la pasión por rodear el día a día de objetos con una identidad visual fuerte.
+                        El proyecto surgió como una forma de trasladar nuestra búsqueda estética al mundo físico,
+                        utilizando la impresión 3D como el puente para dar vida a una selección exclusiva de formas.
+                        Nuestra esencia reside en una curaduría minuciosa de diseños que destacan por su equilibrio y
+                        armonía.
                     </p>
                     <p class="text-sm text-orange-400 leading-relaxed font-medium">
-                        Nuestro objetivo es democratizar el diseño de alta complejidad. Cada pieza es fabricada bajo
-                        demanda en nuestro laboratorio de Buenos Aires, utilizando biopolímeros sustentables (PLA+) y
-                        técnicas de post-procesado manual que garantizan un acabado de galería.
+                        El diferencial de VOLUMEN aparece en el detalle y en la interpretación cromática de cada objeto.
+                        Entendemos que la potencia de una pieza cambia por completo según su color, por lo que dedicamos
+                        el proceso a encontrar combinaciones únicas que transforman cada diseño en algo propio. Cada
+                        lámpara es una declaración de intenciones donde la sensibilidad visual cuida cada ángulo.
                     </p>
                     <p class="text-sm text-orange-400 leading-relaxed font-medium">
-                        Creemos en un futuro donde los objetos no se producen en masa, sino que se cultivan digitalmente
-                        capa por capa, adaptándose a las necesidades específicas de cada espacio y usuario.
+                        Hoy, la marca es el reflejo de un compromiso con la estética coherente en cada detalle. Creemos
+                        que la forma en que presentamos lo que hacemos es parte fundamental de la experiencia,
+                        transmitiendo siempre esa pasión por el diseño bien seleccionado. Somos un "Origen 3D" pensado
+                        para quienes buscan piezas que no solo iluminen, sino que aporten un carácter distintivo a cada
+                        espacio.
                     </p>
                     <div class="pt-8">
                         <img src="https://images.unsplash.com/photo-1631165686004-9442a842f10b?q=80&w=2787&auto=format&fit=crop"
@@ -369,7 +414,7 @@
     <div id="view-detail" class="view-section">
         <div class="p-6 md:p-12">
             <button onclick="showView('home')"
-                class="flex items-center gap-2 mb-12 text-[10px] font-black uppercase tracking-widest hover:text-[#4B5320] transition-colors">
+                class="flex items-center gap-2 mb-12 text-[10px] font-black uppercase tracking-widest hover:text-orange-400 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12" />
@@ -475,7 +520,7 @@
     <div id="view-checkout" class="view-section">
         <div class="p-6 md:p-12 max-w-6xl mx-auto">
             <h2 class="text-5xl font-black uppercase tracking-tighter mb-12">Checkout / <span
-                    class="text-gray-300">Pago</span></h2>
+                    class="text-white/40">Pago</span></h2>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
                 <!-- Columna Izquierda: Datos y Pago -->
@@ -488,7 +533,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input type="text" placeholder="NOMBRE COMPLETO" class="input-tech">
                             <input type="email" placeholder="EMAIL" class="input-tech">
-                            <input type="text" placeholder="DIRECCIÓN" class="input-tech md:col-span-2">
+                            <input type="text" placeholder="TELÉFONO" class="input-tech">
+                            <input type="text" placeholder="DIRECCIÓN" class="input-tech">
                             <input type="text" placeholder="CIUDAD" class="input-tech">
                             <input type="text" placeholder="CÓDIGO POSTAL" class="input-tech">
                         </div>
@@ -499,7 +545,7 @@
                         <h3
                             class="mono text-[11px] font-black uppercase mb-6 tracking-[0.2em] border-b border-white pb-2">
                             02 / Selección de Pago</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                             <div onclick="selectPayment('transfer', this)"
                                 class="payment-option p-6 flex flex-col items-center gap-3 active">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -509,25 +555,17 @@
                                 </svg>
                                 <span class="text-[10px] font-black uppercase">Transferencia</span>
                             </div>
-                            <div onclick="selectPayment('card', this)"
-                                class="payment-option p-6 flex flex-col items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2">
-                                    <path
-                                        d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
-                                    <line x1="1" y1="10" x2="23" y2="10" />
-                                </svg>
-                                <span class="text-[10px] font-black uppercase">Tarjeta</span>
-                            </div>
                             <div onclick="selectPayment('mercadopago', this)"
                                 class="payment-option p-6 flex flex-col items-center gap-3">
-                                <span class="font-black text-blue-500 italic">MP</span>
+                                <img src="https://www.mercadopago.com/instore/merchant/static/images/mp_logo.png"
+                                    alt="Mercado Pago"
+                                    class="w-16 h-auto grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
                                 <span class="text-[10px] font-black uppercase">Mercado Pago</span>
                             </div>
                         </div>
 
                         <!-- Detalles Dinámicos de Pago -->
-                        <div id="payment-details-container" class="bg-gray-50 p-8 border border-gray-200">
+                        <div id="payment-details-container" class="bg-zinc-900 p-8 border border-white/10">
                             <!-- Transferencia (Default) -->
                             <div id="details-transfer" class="payment-detail-block">
                                 <p class="text-xs font-bold uppercase mb-4">Datos de Transferencia:</p>
@@ -539,15 +577,6 @@
                                 </div>
                             </div>
 
-                            <!-- Tarjeta -->
-                            <div id="details-card" class="payment-detail-block hidden space-y-4">
-                                <input type="text" placeholder="NÚMERO DE TARJETA" class="input-tech">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <input type="text" placeholder="MM/YY" class="input-tech text-center">
-                                    <input type="text" placeholder="CVV" class="input-tech text-center">
-                                </div>
-                                <input type="text" placeholder="NOMBRE EN LA TARJETA" class="input-tech">
-                            </div>
 
                             <!-- Mercado Pago -->
                             <div id="details-mercadopago" class="payment-detail-block hidden text-center py-4">
@@ -592,20 +621,35 @@
     </div>
 
     <!-- VISTA: SUCCESS (ÉXITO) -->
-    <div id="view-success" class="view-section h-[70vh]">
-        <div class="h-full flex flex-col items-center justify-center text-center p-6">
-            <div class="w-20 h-20 bg-[#4B5320] text-white flex items-center justify-center rounded-full mb-8">
+    <div id="view-success" class="view-section min-h-[70vh]">
+        <div class="h-full flex flex-col items-center justify-center text-center p-6 py-20">
+            <div class="w-20 h-20 bg-white text-black flex items-center justify-center rounded-full mb-8">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="3">
                     <polyline points="20 6 9 17 4 12" />
                 </svg>
             </div>
             <h2 class="text-4xl font-black uppercase tracking-tighter mb-4">Pedido Confirmado</h2>
-            <p class="mono text-[10px] text-gray-400 uppercase mb-8">Orden ID: #VL-2024-8832</p>
-            <p class="text-sm max-w-xs text-gray-500 mb-10">Gracias por elegir VOLUMEN. Te enviamos los detalles de
+            <p id="success-order-id" class="mono text-[10px] text-gray-400 uppercase mb-8">Orden ID: #VL-2024-PENDIENTE
+            </p>
+            <p class="text-sm max-w-xs text-zinc-400 mb-10">Gracias por elegir VOLUMEN. Te enviamos los detalles de
                 fabricación y seguimiento a tu email.</p>
+
+            <div id="transfer-whatsapp-container" class="hidden w-full max-w-xs mb-6">
+                <p class="text-[10px] font-bold uppercase text-orange-400 mb-4 tracking-widest">¿Pagaste por
+                    Transferencia?</p>
+                <button onclick="sendWhatsAppReceipt()"
+                    class="bg-[#25d366] text-white w-full py-5 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-[#128c7e] transition-all">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.438 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.521.074-.793.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                    </svg>
+                    Enviar Comprobante
+                </button>
+            </div>
+
             <button onclick="showView('home')"
-                class="border border-black px-12 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                class="border border-white px-12 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
                 Volver a la Tienda
             </button>
         </div>
@@ -653,7 +697,7 @@
         class="p-10 md:p-20 border-t border-white bg-black flex flex-col md:flex-row justify-between items-start gap-16 mt-32">
         <div class="max-w-xs">
             <div class="text-2xl font-black tracking-tighter mb-6 uppercase">VOLUMEN</div>
-            <p class="text-xs text-gray-400 leading-relaxed font-medium">Laboratorio de diseño y producción 3D enfocado
+            <p class="text-xs text-zinc-400 leading-relaxed font-medium">Laboratorio de diseño y producción 3D enfocado
                 en la síntesis entre forma y función industrial.</p>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-16 md:gap-32 w-full md:w-auto">
@@ -723,14 +767,14 @@
                 return `
                     <div class="carousel-card bg-white border border-black p-6 group cursor-pointer hover:shadow-xl transition-all duration-500" onclick="openProduct('${id}')">
                         <div class="aspect-square bg-gray-50 mb-6 overflow-hidden flex items-center justify-center relative">
-                            <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-70 group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute top-0 right-0 bg-[#4B5320] text-white text-[8px] px-3 py-1 font-black uppercase tracking-widest">Top Sold</div>
+                            <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-100 group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-0 right-0 bg-black text-white text-[8px] px-3 py-1 font-black uppercase tracking-widest">Top Sold</div>
                         </div>
                         <h3 class="font-black text-lg uppercase tracking-tighter mb-1">${prod.name}</h3>
-                        <p class="mono text-[10px] text-gray-400 uppercase mb-4">${prod.category}</p>
+                        <p class="mono text-[10px] text-zinc-400 uppercase mb-4">${prod.category}</p>
                         <div class="flex justify-between items-center">
                             <span class="font-black text-sm">$${prod.price.toLocaleString()}</span>
-                            <span class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 group-hover:text-[#4B5320] group-hover:border-[#4B5320] transition-colors">Ver Producto</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 group-hover:text-orange-400 group-hover:border-orange-400 transition-colors">Ver Producto</span>
                         </div>
                     </div>
                 `;
@@ -828,7 +872,7 @@
                             Ver Detalles
                         </button>
                         <button class="text-black border border-black py-4 text-[10px] font-black uppercase tracking-[0.2em] w-full hover:bg-black hover:text-white transition-all duration-300" 
-                                onclick="event.stopPropagation(); addToCart('${prod.name}', ${prod.price}, 1, 'Blanco')">
+                                onclick="event.stopPropagation(); addToCart('${id}', '${prod.name}', ${prod.price}, 1, 'Blanco')">
                             Añadir al Carrito
                         </button>
                     </div>
@@ -877,7 +921,7 @@
             `).join('');
 
             document.getElementById('add-to-cart-detail').onclick = () => {
-                addToCart(prod.name, prod.price, selectedQty, selectedColor);
+                addToCart(id, prod.name, prod.price, selectedQty, selectedColor);
             };
 
             showView('detail');
@@ -920,13 +964,13 @@
             }
         }
 
-        function addToCart(name, price, qty = 1, color = 'N/A') {
-            const cartId = `${name}-${color}`;
+        function addToCart(id, name, price, qty = 1, color = 'N/A') {
+            const cartId = `${id}-${color}`;
             const existingItem = cart.find(item => item.cartId === cartId);
             if (existingItem) {
                 existingItem.qty += qty;
             } else {
-                cart.push({ cartId, name, price, qty, color });
+                cart.push({ cartId, id, name, price, qty, color });
             }
             renderCart();
             toggleCart();
@@ -1006,69 +1050,96 @@
             `).join('');
         }
 
+        // WhatsApp Integration
+        const whatsappNumber = "5491169348674"; // Número real del usuario
+
+        function sendWhatsAppReceipt() {
+            const orderId = document.getElementById('success-order-id').innerText;
+            const message = encodeURIComponent(`Hola VOLUMEN! Envío el comprobante de mi pedido ${orderId}.`);
+            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+        }
+
         async function processFinalPayment() {
             const btn = document.querySelector('#view-checkout .btn-orange');
             const originalText = btn.innerText;
 
+            // Obtener datos del cliente del formulario
+            const customerData = {
+                name: document.querySelector('input[placeholder="NOMBRE COMPLETO"]').value,
+                email: document.querySelector('input[placeholder="EMAIL"]').value,
+                phone: document.querySelector('input[placeholder="TELÉFONO"]').value,
+                address: document.querySelector('input[placeholder="DIRECCIÓN"]').value,
+                city: document.querySelector('input[placeholder="CIUDAD"]').value,
+                zip: document.querySelector('input[placeholder="CÓDIGO POSTAL"]').value
+            };
+
+            if (!customerData.name || !customerData.email || !customerData.phone) {
+                alert("Por favor completa los datos de contacto y teléfono.");
+                return;
+            }
+
+            const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:3001'
+                : 'https://volumen-backend.onrender.com';
+
+            btn.disabled = true;
+
             if (currentPayment === 'mercadopago') {
                 btn.innerText = "REDIRECCIONANDO...";
-                btn.disabled = true;
-
                 try {
-                    const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                        ? 'http://localhost:3001'
-                        : 'https://volumen-backend.onrender.com'; // Reemplazar después de desplegar
-
                     const response = await fetch(`${API_URL}/create_preference`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ items: cart }),
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            items: cart,
+                            customer: customerData
+                        }),
                     });
 
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.details || 'Error en la respuesta del servidor');
-                    }
-
+                    if (!response.ok) throw new Error('Error en el servidor');
                     const preference = await response.json();
 
-                    if (!preference.id) {
-                        throw new Error('No se recibió un ID de preferencia válido de Mercado Pago');
-                    }
-
-                    const mp = new MercadoPago('APP_USR-4546c1d5-aa74-459f-b2f9-a53078b94d60', {
-                        locale: 'es-AR'
-                    });
-
-                    mp.checkout({
-                        preference: {
-                            id: preference.id
-                        },
-                        autoOpen: true
-                    });
-
+                    const mp = new MercadoPago('APP_USR-4546c1d5-aa74-459f-b2f9-a53078b94d60', { locale: 'es-AR' });
+                    mp.checkout({ preference: { id: preference.id }, autoOpen: true });
                 } catch (error) {
-                    console.error('Error in Mercado Pago:', error);
-                    alert('Error al iniciar el pago con Mercado Pago. Por favor, intenta de nuevo.');
+                    console.error('Error:', error);
+                    alert('Error con Mercado Pago.');
                     btn.innerText = originalText;
                     btn.disabled = false;
                 }
                 return;
             }
 
-            btn.innerText = "PROCESANDO...";
-            btn.disabled = true;
+            if (currentPayment === 'transfer') {
+                btn.innerText = "PROCESANDO PEDIDO...";
+                try {
+                    const response = await fetch(`${API_URL}/confirm_transfer`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            items: cart,
+                            customer: customerData,
+                            total: document.getElementById('checkout-total').innerText
+                        }),
+                    });
 
-            // Simular proceso de red o validación para otros métodos
-            setTimeout(() => {
-                cart = [];
-                renderCart();
-                showView('success');
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }, 2000);
+                    if (!response.ok) throw new Error('Error al enviar el pedido');
+                    const result = await response.json();
+
+                    document.getElementById('success-order-id').innerText = `Orden ID: ${result.orderId}`;
+                    document.getElementById('transfer-whatsapp-container').classList.remove('hidden');
+
+                    cart = [];
+                    renderCart();
+                    showView('success');
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al procesar el pedido por transferencia.');
+                } finally {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1082,6 +1153,7 @@
             if (status === 'success') {
                 cart = [];
                 renderCart();
+                document.getElementById('transfer-whatsapp-container').classList.add('hidden');
                 showView('success');
             } else if (status === 'failure') {
                 alert('El pago no pudo procesarse. Por favor, intenta de nuevo.');
@@ -1099,6 +1171,14 @@
             }
         };
     </script>
+
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/5491169348674" class="whatsapp-float" target="_blank" title="Consultas por WhatsApp">
+        <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
+            <path
+                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.438 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.521.074-.793.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+        </svg>
+    </a>
 </body>
 
 </html>
