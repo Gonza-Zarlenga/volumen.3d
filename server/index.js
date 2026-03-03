@@ -15,13 +15,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configuración de CORS simplificada para Debug
-app.use(cors());
-console.log("CORS habilitado para todos los orígenes.");
+// Configuración de CORS robusta
+app.use(cors({
+    origin: '*', // Permitir todo por ahora para asegurar funcionamiento en Render
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+console.log("CORS habilitado.");
 app.use(express.json());
 
 // Servir archivos estáticos
-app.use(express.static(path.join(__dirname, '../')));
+// Servir archivos estáticos
+app.use(express.static(path.join(__dirname, '../public'))); // Primero public para las imágenes
+app.use(express.static(path.join(__dirname, '../'))); // Luego la raíz para index.html
 
 // Configuración de Nodemailer
 const transporter = nodemailer.createTransport({

@@ -1078,16 +1078,13 @@
             }
 
             // Detectar la URL del backend dinámicamente o usar fallback
-            let API_URL = 'https://volumen-backend.onrender.com';
-
+            // Usar URL relativa para producción (mismo dominio)
+            let API_URL = '';
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 API_URL = 'http://localhost:3001';
-            } else if (window.location.hostname.includes('onrender.com')) {
-                // Si estamos en Render, intentamos usar el mismo dominio pero con -backend si es necesario
-                // O dejamos la configurada por defecto
-                API_URL = 'https://volumen-backend.onrender.com';
             }
-            console.log("--- DEBUG: Fetching from API_URL:", API_URL);
+
+            console.log("Using API_URL:", API_URL || "(relative)");
 
             btn.disabled = true;
 
