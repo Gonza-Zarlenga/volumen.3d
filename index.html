@@ -557,8 +557,7 @@
                             </div>
                             <div onclick="selectPayment('mercadopago', this)"
                                 class="payment-option p-6 flex flex-col items-center gap-3">
-                                <img src="https://www.mercadopago.com/instore/merchant/static/images/mp_logo.png"
-                                    alt="Mercado Pago"
+                                <img src="https://http2.mlstatic.com/static/org-img/mp/mp-logo.svg" alt="Mercado Pago"
                                     class="w-16 h-auto grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all">
                                 <span class="text-[10px] font-black uppercase">Mercado Pago</span>
                             </div>
@@ -1078,9 +1077,16 @@
                 return;
             }
 
-            const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:3001'
-                : 'https://volumen-backend.onrender.com';
+            // Detectar la URL del backend dinámicamente o usar fallback
+            let API_URL = 'https://volumen-backend.onrender.com';
+
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                API_URL = 'http://localhost:3001';
+            } else if (window.location.hostname.includes('onrender.com')) {
+                // Si estamos en Render, intentamos usar el mismo dominio pero con -backend si es necesario
+                // O dejamos la configurada por defecto
+                API_URL = 'https://volumen-backend.onrender.com';
+            }
 
             btn.disabled = true;
 

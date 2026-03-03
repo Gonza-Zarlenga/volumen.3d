@@ -15,14 +15,28 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configuración de CORS para permitir peticiones desde local y producción
+// Configuración de CORS dinámica
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://localhost:5173',
-        'https://volumen-3d.onrender.com'
-    ],
+    origin: function (origin, callback) {
+        // Permitir peticiones sin origen (como mobile apps o curl)
+        if (!origin) return callback(null, true);
+
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:3001',
+            'http://localhost:5173',
+            'https://volumen-3d.onrender.com',
+            'https://volumen-3d-backend.onrender.com', // Por si acaso
+            'https://volumen-backend.onrender.com'
+        ];
+
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.onrender.com')) {
+            callback(null, true);
+        } else {
+            console.log("Origen bloqueado por CORS:", origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST'],
     credentials: true
 }));
