@@ -12,234 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <style>
-        :root {
-            --orange: #e2892a;
-            --orange-hover: #c87911;
-            --bg-dark: #000000;
-            --bg-white: #ffffff;
-            --text-main: #ffffff;
-            --text-dim: #a1a1aa;
-        }
-
-        body {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            background-image:
-                linear-gradient(to right, rgba(255, 255, 255, 0.05) 0.5px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0.5px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .btn-orange {
-            background-color: var(--orange);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-orange:hover {
-            background-color: var(--orange-hover);
-            transform: translateY(-1px);
-        }
-
-        .product-card {
-            border: 1px solid var(--orange);
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .product-card:hover {
-            box-shadow: 8px 8px 0px rgba(35, 35, 35, 0.05);
-        }
-
-        /* Barra de desplazamiento personalizada */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #000;
-        }
-
-        .cart-sidebar {
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Carousel Styles */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .carousel-card {
-            flex: 0 0 300px;
-            scroll-snap-align: start;
-        }
-
-        .view-section {
-            display: none;
-        }
-
-        .view-active {
-            display: block;
-        }
-
-        .color-dot {
-            width: 24px;
-            height: 24px;
-            border: 1px solid #fff;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .color-dot:hover {
-            transform: scale(1.1);
-        }
-
-        .color-dot.active {
-            border: 2px solid #e5e5e5;
-        }
-
-        .thumbnail {
-            cursor: pointer;
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-
-        .thumbnail:hover,
-        .thumbnail.active {
-            opacity: 1;
-        }
-
-        .payment-option {
-            border: 1px solid #fff;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .payment-option.active {
-            background-color: #fff;
-            color: #000;
-        }
-
-        .payment-option:hover:not(.active) {
-            /* background-color: #f8f8f8; */
-            background-color: #000;
-        }
-
-        .input-tech {
-            border: 1px solid #fff;
-            border-radius: 0;
-            padding: 12px;
-            font-size: 12px;
-            width: 100%;
-            outline: none;
-            font-family: 'JetBrains Mono', monospace;
-            background: transparent;
-        }
-
-        .input-tech:focus {
-            border-bottom: 3px solid var(--orange);
-            background: #000;
-        }
-
-        .filter-btn {
-            border-bottom: 2px solid transparent;
-            opacity: 0.5;
-            font-size: 16px;
-            padding: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            border-color: var(--orange);
-            color: var(--orange);
-            opacity: 1;
-        }
-
-        .container.catalog {
-            margin: 40px;
-            background-color: red;
-        }
-
-        /* Animaciones */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .btn-orange {
-            background-color: var(--orange);
-            color: white;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-orange:hover {
-            background-color: var(--orange-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(75, 83, 32, 0.3);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Botón Flotante WhatsApp */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            background-color: #25d366;
-            color: #FFF;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            z-index: 100;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.1) rotate(5deg);
-            background-color: #128c7e;
-        }
-
-        @media screen and (max-width: 768px) {
-            .whatsapp-float {
-                bottom: 20px;
-                right: 20px;
-                width: 50px;
-                height: 50px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/src/index.css">
     <!-- Mercado Pago SDK -->
     <script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
@@ -276,28 +49,44 @@
     <!-- VISTA: HOME (CATÁLOGO) -->
     <div id="view-home" class="view-section view-active">
         <header
-            class="px-6 py-32 border-b border-black flex flex-col items-center text-center bg-black relative overflow-hidden">
-            <div class="absolute inset-0 opacity-[0.03] pointer-events-none">
-                <svg width="100%" height="100%">
-                    <rect width="100%" height="100%" fill="url(#grid)" />
-                </svg>
+            class="relative min-h-[90vh] flex flex-col items-center justify-center text-center overflow-hidden border-b border-black">
+            <!-- Background Carousel -->
+            <div class="absolute inset-0 z-0">
+                <div id="hero-carousel" class="h-full w-full relative">
+                    <!-- Slides are handled via CSS/JS -->
+                    <div class="carousel-slide active"
+                        style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=2067&auto=format&fit=crop')">
+                    </div>
+                    <div class="carousel-slide"
+                        style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop')">
+                    </div>
+                    <div class="carousel-slide"
+                        style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=2070&auto=format&fit=crop')">
+                    </div>
+                </div>
             </div>
-            <span
-                class="mono text-[9px] uppercase tracking-[0.4em] mb-6 text-gray-400 block border border-gray-200 px-3 py-1">Origen-3D</span>
-            <h1
-                class="text-[14vw] md:text-[12vw] font-black text-white-400 mb-8 tracking-tighter leading-none uppercase">
-                VOLUMEN
-            </h1>
-            <p class="max-w-md text-sm leading-relaxed text-gary-800 mb-10 font-medium">
-                Sistemas de iluminación y objetos decorativos. Ingeniería aplicada a la estética de la fabricación
-                aditiva.
-            </p>
-            <div class="flex gap-4">
-                <button onclick="document.getElementById('catalog').scrollIntoView({behavior: 'smooth'})"
-                    class="btn-orange px-12 py-4 font-bold uppercase tracking-widest text-[10px]">
-                    Explorar Stock
-                </button>
+
+            <!-- Hero Content -->
+            <div class="relative z-10 px-6 flex flex-col items-center">
+                <span
+                    class="mono text-[9px] uppercase tracking-[0.4em] mb-6 text-orange-400 block border border-orange-400/30 px-3 py-1 bg-black/50 backdrop-blur-sm">Origen-3D
+                    / V.03</span>
+                <h1
+                    class="text-[14vw] md:text-[12vw] font-black text-white mb-8 tracking-tighter leading-none uppercase drop-shadow-2xl">
+                    VOLUMEN
+                </h1>
+                <p class="max-w-md text-sm leading-relaxed text-gray-300 mb-10 font-medium drop-shadow-md">
+                    Sistemas de iluminación y objetos decorativos. Ingeniería aplicada a la estética de la fabricación
+                    aditiva.
+                </p>
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('catalog').scrollIntoView({behavior: 'smooth'})"
+                        class="btn-orange px-12 py-4 font-bold uppercase tracking-widest text-[10px] shadow-2xl">
+                        Explorar Stock
+                    </button>
+                </div>
             </div>
+
         </header>
 
         <!-- SECCIÓN: BEST SELLERS -->
@@ -335,20 +124,85 @@
             </div>
         </section>
 
-        <main id="catalog" class="p-6 md:p-20">
+        <!-- Trust Section (Badges) - Refined Centered Design -->
+        <section class="trust-section relative py-24 bg-[#0a0a0a] border-y border-white/5 overflow-hidden">
+            <!-- Subtle background decorative element -->
+            <div class="absolute top-0 right-0 w-1/3 h-full bg-orange-400/5 blur-[120px] pointer-events-none"></div>
+
             <div
-                class="z-30 bg-black/95 backdrop-blur-md margin-left:20px margin-right:20px flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8 py-6 border-b border-black/5">
-                <div>
-                    <h2 class="text-4xl font-black uppercase tracking-tighter leading-none">Artifacts</h2>
-                    <p class="mono text-[10px] text-gray-400 mt-2">Disponibilidad de lote actual: PLA de Alta
-                        Precisión
-                    </p>
+                class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-24 relative z-10 text-center">
+                <div class="flex flex-col items-center group">
+                    <div
+                        class="mb-8 p-6 bg-zinc-900 border border-white/10 rounded-2xl group-hover:border-orange-400/50 transition-all duration-700 shadow-2xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                            stroke="#e2892a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black uppercase tracking-tighter text-white mb-3">Envío Blindado</h4>
+                        <p class="text-[12px] mono text-gray-400 uppercase leading-loose tracking-[0.15em]">Protección
+                            estructural <br class="hidden lg:block"> de triple capa.</p>
+                    </div>
                 </div>
-                <div class="flex gap-8 text-[10px] font-bold uppercase tracking-widest">
-                    <button onclick="filterGrid('all', this)" class="filter-btn active pb-1">Todos</button>
-                    <button onclick="filterGrid('Iluminación', this)" class="filter-btn pb-1">Lámparas</button>
-                    <button onclick="filterGrid('Decoración', this)" class="filter-btn pb-1">Deco</button>
-                    <button onclick="filterGrid('Arte', this)" class="filter-btn pb-1">Art Toys</button>
+
+                <div class="flex flex-col items-center group">
+                    <div
+                        class="mb-8 p-6 bg-zinc-900 border border-white/10 rounded-2xl group-hover:border-orange-400/50 transition-all duration-700 shadow-2xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                            stroke="#e2892a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="14" x="2" y="5" rx="2" />
+                            <line x1="2" x2="22" y1="10" y2="10" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black uppercase tracking-tighter text-white mb-3">Seguridad Total</h4>
+                        <p class="text-[12px] mono text-gray-400 uppercase leading-loose tracking-[0.15em]">Mercado Pago
+                            <br class="hidden lg:block"> & Transferencia.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center group">
+                    <div
+                        class="mb-8 p-6 bg-zinc-900 border border-white/10 rounded-2xl group-hover:border-orange-400/50 transition-all duration-700 shadow-2xl">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                            stroke="#e2892a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M10 17h4V5H2v12h3m15 0h2v-3.34a2 2 0 0 0-1.17-1.83L17 10h-3v7h3m-9 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0m10 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black uppercase tracking-tighter text-white mb-3">Envíos a todo el país
+                        </h4>
+                        <p class="text-[12px] mono text-gray-400 uppercase leading-loose tracking-[0.15em]">Llegamos a
+                            cada punto <br class="hidden lg:block"> de la Argentina.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <main id="catalog" class="px-6 py-12 md:p-20">
+            <!-- Catalog Header: Improved Responsiveness -->
+            <div
+                class="z-30 sticky top-[72px] bg-black/95 backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-8 py-8 border-b border-white/5 mx-auto max-w-7xl">
+                <div class="space-y-2">
+                    <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none text-white">
+                        Artifacts</h2>
+                    <p class="mono text-[10px] text-gray-400 uppercase tracking-widest">Disponibilidad de lote actual:
+                        <span class="text-orange-400">PLA+ Industrial</span></p>
+                </div>
+                <!-- Filters: Scrollable on mobile -->
+                <div
+                    class="flex gap-6 md:gap-8 overflow-x-auto no-scrollbar w-full md:w-auto pb-2 md:pb-0 text-[10px] font-bold uppercase tracking-widest border-b border-white/5 md:border-none">
+                    <button onclick="filterGrid('all', this)"
+                        class="filter-btn active whitespace-nowrap pb-2">Todos</button>
+                    <button onclick="filterGrid('Iluminación', this)"
+                        class="filter-btn whitespace-nowrap pb-2">Lámparas</button>
+                    <button onclick="filterGrid('Decoración', this)"
+                        class="filter-btn whitespace-nowrap pb-2">Deco</button>
+                    <button onclick="filterGrid('Arte', this)" class="filter-btn whitespace-nowrap pb-2">Art
+                        Toys</button>
                 </div>
             </div>
 
@@ -726,455 +580,7 @@
         </div>
     </footer>
 
-    <script>
-        // Intersection Observer para animaciones al scrollear
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    console.log("Element revealing:", entry.target.tagName, entry.target.className);
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        function initAnimations() {
-            const elements = document.querySelectorAll('h1, h2, p, .product-card, .carousel-card, img, button:not(.filter-btn), input');
-            elements.forEach(el => {
-                // Solo agregar si no tiene la clase reveal para evitar que desaparezcan al refrescar el grid
-                if (!el.classList.contains('reveal') && !el.classList.contains('active')) {
-                    el.classList.add('reveal');
-                    observer.observe(el);
-                }
-            });
-        }
-
-        function renderBestSellers() {
-            const container = document.getElementById('best-sellers-scroll');
-            if (!container) return;
-
-            // Simulamos los "más vendidos" tomando algunos productos
-            const bestSellersIds = ['nova', 'aurum', 'lava', 'nova', 'lava', 'nova']; // Repetimos uno para llenar espacio si hay pocos
-
-            container.innerHTML = bestSellersIds.map(id => {
-                const prod = products[id];
-                return `
-                    <div class="carousel-card bg-white border border-black p-6 group cursor-pointer hover:shadow-xl transition-all duration-500" onclick="openProduct('${id}')">
-                        <div class="aspect-square bg-gray-50 mb-6 overflow-hidden flex items-center justify-center relative">
-                            <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-100 group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute top-0 right-0 bg-black text-white text-[8px] px-3 py-1 font-black uppercase tracking-widest">Top Sold</div>
-                        </div>
-                        <h3 class="font-black text-lg uppercase tracking-tighter mb-1">${prod.name}</h3>
-                        <p class="mono text-[10px] text-zinc-400 uppercase mb-4">${prod.category}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="font-black text-sm">$${prod.price.toLocaleString()}</span>
-                            <span class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 group-hover:text-orange-400 group-hover:border-orange-400 transition-colors">Ver Producto</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        const products = {
-            'nova': {
-                id: 'nova',
-                name: 'Nova Lamp',
-                price: 35000,
-                category: 'Iluminación',
-                desc: 'Iluminación paramétrica de alta precisión. Estructura optimizada para difusión de luz suave.',
-                material: 'PLA+ REFORZADO',
-                time: '18H 45M',
-                dims: '240 x 180 mm',
-                code: 'LMP-01',
-                images: ['/products/nova-1.jpg', '/products/nova-2.jpg', '/products/nova-3.jpg']
-            },
-            'aurum': {
-                id: 'aurum',
-                name: 'Aurum Sculpture',
-                price: 12500,
-                category: 'Arte / Colección',
-                desc: 'Objeto de culto coleccionable. Terminación artesanal sobre base de impresión 3D.',
-                material: 'MATTE POLYMER',
-                time: '08H 12M',
-                dims: '120 x 120 mm',
-                code: 'TOY-05',
-                images: ['/products/aurum-1.jpg', '/products/aurum-2.jpg']
-            },
-            'lava': {
-                id: 'lava',
-                name: 'Lava Vase',
-                price: 8900,
-                category: 'Decoración',
-                desc: 'Textura orgánica generativa. Impermeable y resistente al impacto.',
-                material: 'PLA+ INDUSTRIAL',
-                time: '06H 20M',
-                dims: '180 x 100 mm',
-                code: 'OBJ-09',
-                images: ['/products/lava-1.jpg', '/products/lava-2.jpg']
-            },
-            'caca': {
-                id: 'caca',
-                name: 'Organic Piece',
-                price: 8900,
-                category: 'Decoración',
-                desc: 'Textura orgánica generativa. Impermeable y resistente al impacto.',
-                material: 'PLA+ INDUSTRIAL',
-                time: '06H 20M',
-                dims: '180 x 100 mm',
-                code: 'OBJ-10',
-                images: ['/products/piece-1.jpg']
-            }
-        };
-
-        let cart = [];
-        let currentProduct = null;
-        let selectedQty = 1;
-        let selectedColor = 'Blanco';
-        let currentPayment = 'transfer';
-
-        function renderGrid(filter = 'all') {
-            console.log("--- renderGrid Start ---");
-            console.log("Filter:", filter);
-            const grid = document.getElementById('products-grid');
-            if (!grid) {
-                console.error("CRITICAL: Grid element 'products-grid' not found in DOM.");
-                return;
-            }
-
-            const entries = Object.entries(products).filter(([id, prod]) => {
-                if (filter === 'all') return true;
-                if (filter === 'Decoración') return prod.category.includes('Decoración') || prod.category.includes('Arte');
-                return prod.category.includes(filter);
-            });
-            console.log("Entries to render:", entries.length);
-
-            grid.innerHTML = entries.map(([id, prod], index) => `
-                <div id="product-card-${id}" class="product-card p-8 flex flex-col bg-white" style="transition-delay: ${index * 100}ms" onclick="openProduct('${id}')">
-                    <div class="aspect-square bg-gray-50 mb-8 relative overflow-hidden flex items-center justify-center group">
-                        <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-70 grayscale group-hover:grayscale-0 transition-all duration-500">
-                        <div class="absolute top-0 left-0 mono text-[9px] bg-black text-white px-3 py-1 uppercase tracking-widest font-bold">${prod.code}</div>
-                    </div>
-                    <div class="flex justify-between items-baseline mb-3">
-                        <h3 class="font-black text-xl uppercase tracking-tighter">${prod.name}</h3>
-                        <span class="mono font-bold text-sm">$${prod.price.toLocaleString()}</span>
-                    </div>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-6 italic">${prod.category}</p>
-                    
-                    <div class="mt-auto flex flex-col gap-3">
-                        <button class="btn-orange py-4 text-[10px] font-black uppercase tracking-[0.2em] w-full" 
-                                onclick="event.stopPropagation(); openProduct('${id}')">
-                            Ver Detalles
-                        </button>
-                        <button class="text-black border border-black py-4 text-[10px] font-black uppercase tracking-[0.2em] w-full hover:bg-black hover:text-white transition-all duration-300" 
-                                onclick="event.stopPropagation(); addToCart('${id}', '${prod.name}', ${prod.price}, 1, 'Blanco')">
-                            Añadir al Carrito
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-            console.log("HTML injected into grid.");
-            initAnimations();
-        }
-
-        function filterGrid(category, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderGrid(category);
-        }
-
-        function showView(view) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
-            document.getElementById(`view-${view}`).classList.add('view-active');
-            window.scrollTo(0, 0);
-        }
-
-        function openProduct(id) {
-            const prod = products[id];
-            currentProduct = prod;
-            selectedQty = 1;
-            selectedColor = 'Blanco';
-
-            document.getElementById('detail-name').innerText = prod.name;
-            document.getElementById('detail-desc').innerText = prod.desc;
-            document.getElementById('detail-category').innerText = `Categoría: ${prod.category} / V.03 Build`;
-            document.getElementById('detail-price').innerText = `$${prod.price.toLocaleString()}`;
-            document.getElementById('detail-material').innerText = prod.material;
-            document.getElementById('detail-time').innerText = prod.time;
-            document.getElementById('detail-dims').innerText = prod.dims;
-            document.getElementById('image-code').innerText = `REF: ${prod.code}`;
-            document.getElementById('qty-value').innerText = selectedQty;
-
-            const mainImg = document.getElementById('main-image');
-            mainImg.src = prod.images[0];
-
-            const thumbContainer = document.getElementById('thumbnails-container');
-            thumbContainer.innerHTML = prod.images.map((img, index) => `
-                <div onclick="updateMainImage('${img}', this)" class="thumbnail border border-black aspect-square bg-gray-50 overflow-hidden ${index === 0 ? 'active' : ''}">
-                    <img src="${img}" class="w-full h-full object-cover mix-blend-multiply">
-                </div>
-            `).join('');
-
-            document.getElementById('add-to-cart-detail').onclick = () => {
-                addToCart(id, prod.name, prod.price, selectedQty, selectedColor);
-            };
-
-            showView('detail');
-        }
-
-        function updateMainImage(src, thumbEl) {
-            const mainImg = document.getElementById('main-image');
-            mainImg.style.opacity = '0';
-            setTimeout(() => {
-                mainImg.src = src;
-                mainImg.style.opacity = '1';
-            }, 200);
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-            thumbEl.classList.add('active');
-        }
-
-        function selectColor(color, el) {
-            selectedColor = color;
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function changeQty(val) {
-            selectedQty = Math.max(1, selectedQty + val);
-            document.getElementById('qty-value').innerText = selectedQty;
-        }
-
-        function toggleCart() {
-            const cartSidebar = document.getElementById('cart-sidebar');
-            const cartOverlay = document.getElementById('cart-overlay');
-            const isOpen = !cartSidebar.classList.contains('translate-x-full');
-            if (isOpen) {
-                cartSidebar.classList.add('translate-x-full');
-                cartOverlay.classList.add('hidden');
-                cartOverlay.classList.remove('opacity-100');
-            } else {
-                cartSidebar.classList.remove('translate-x-full');
-                cartOverlay.classList.remove('hidden');
-                setTimeout(() => cartOverlay.classList.add('opacity-100'), 10);
-            }
-        }
-
-        function addToCart(id, name, price, qty = 1, color = 'N/A') {
-            const cartId = `${id}-${color}`;
-            const existingItem = cart.find(item => item.cartId === cartId);
-            if (existingItem) {
-                existingItem.qty += qty;
-            } else {
-                cart.push({ cartId, id, name, price, qty, color });
-            }
-            renderCart();
-            toggleCart();
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.cartId !== id);
-            renderCart();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items-container');
-            const cartCount = document.getElementById('cart-count');
-            const cartTotal = document.getElementById('cart-total');
-
-            if (cart.length === 0) {
-                container.innerHTML = '<div class="flex flex-col items-center justify-center h-40 opacity-20"><p class="mono text-[10px] uppercase font-bold">Vacío</p></div>';
-                cartCount.innerText = '0';
-                cartTotal.innerText = '$0';
-                return;
-            }
-
-            let total = 0;
-            let count = 0;
-
-            container.innerHTML = cart.map(item => {
-                total += item.price * item.qty;
-                count += item.qty;
-                return `
-                    <div class="flex gap-6 items-start pb-8 border-b border-gray-100 last:border-0">
-                        <div class="w-16 h-16 bg-gray-50 flex-shrink-0 flex items-center justify-center relative border border-gray-100">
-                             <div class="absolute -top-1 -left-1 bg-black text-[8px] text-white px-1 font-bold mono">x${item.qty}</div>
-                        </div>
-                        <div class="flex-grow">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-[11px] font-black uppercase tracking-tight leading-tight mb-1">${item.name}</h4>
-                                <button onclick="removeFromCart('${item.cartId}')" class="text-gray-300 hover:text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                </button>
-                            </div>
-                            <p class="mono text-[9px] text-gray-400 uppercase">COLOR: ${item.color}</p>
-                            <p class="text-xs font-black mt-3">$${(item.price * item.qty).toLocaleString()}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            cartCount.innerText = count;
-            cartTotal.innerText = '$' + total.toLocaleString();
-        }
-
-        // Nuevas funciones de Checkout
-        function selectPayment(method, el) {
-            currentPayment = method;
-            document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('.payment-detail-block').forEach(b => b.classList.add('hidden'));
-            document.getElementById(`details-${method}`).classList.remove('hidden');
-        }
-
-        function goToCheckout() {
-            if (cart.length === 0) return;
-            toggleCart();
-            renderCheckout();
-            showView('checkout');
-        }
-
-        function renderCheckout() {
-            let subtotal = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            document.getElementById('checkout-subtotal').innerText = `$${subtotal.toLocaleString()}`;
-            document.getElementById('checkout-total').innerText = `$${(subtotal + 1500).toLocaleString()}`;
-            document.getElementById('checkout-items').innerHTML = cart.map(i => `
-                <div class="flex justify-between text-[10px] mono uppercase">
-                    <span>${i.qty}x ${i.name}</span>
-                    <span>$${(i.price * i.qty).toLocaleString()}</span>
-                </div>
-            `).join('');
-        }
-
-        // WhatsApp Integration
-        const whatsappNumber = "5491169348674"; // Número real del usuario
-
-        function sendWhatsAppReceipt() {
-            const orderId = document.getElementById('success-order-id').innerText;
-            const message = encodeURIComponent(`Hola VOLUMEN! Envío el comprobante de mi pedido ${orderId}.`);
-            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
-        }
-
-        async function processFinalPayment() {
-            const btn = document.querySelector('#view-checkout .btn-orange');
-            const originalText = btn.innerText;
-
-            // Obtener datos del cliente del formulario
-            const customerData = {
-                name: document.querySelector('input[placeholder="NOMBRE COMPLETO"]').value,
-                email: document.querySelector('input[placeholder="EMAIL"]').value,
-                phone: document.querySelector('input[placeholder="TELÉFONO"]').value,
-                address: document.querySelector('input[placeholder="DIRECCIÓN"]').value,
-                city: document.querySelector('input[placeholder="CIUDAD"]').value,
-                zip: document.querySelector('input[placeholder="CÓDIGO POSTAL"]').value
-            };
-
-            if (!customerData.name || !customerData.email || !customerData.phone) {
-                alert("Por favor completa los datos de contacto y teléfono.");
-                return;
-            }
-
-            // Detectar la URL del backend dinámicamente o usar fallback
-            // Usar URL relativa para producción (mismo dominio)
-            let API_URL = '';
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                API_URL = 'http://localhost:3001';
-            }
-
-            console.log("Using API_URL:", API_URL || "(relative)");
-
-            btn.disabled = true;
-
-            if (currentPayment === 'mercadopago') {
-                btn.innerText = "REDIRECCIONANDO...";
-                try {
-                    const response = await fetch(`${API_URL}/create_preference`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            items: cart,
-                            customer: customerData
-                        }),
-                    });
-
-                    if (!response.ok) throw new Error('Error en el servidor');
-                    const preference = await response.json();
-
-                    const mp = new MercadoPago('APP_USR-4546c1d5-aa74-459f-b2f9-a53078b94d60', { locale: 'es-AR' });
-                    mp.checkout({ preference: { id: preference.id }, autoOpen: true });
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error con Mercado Pago.');
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-                return;
-            }
-
-            if (currentPayment === 'transfer') {
-                btn.innerText = "PROCESANDO PEDIDO...";
-                try {
-                    const response = await fetch(`${API_URL}/confirm_transfer`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            items: cart,
-                            customer: customerData,
-                            total: document.getElementById('checkout-total').innerText
-                        }),
-                    });
-
-                    if (!response.ok) throw new Error('Error al enviar el pedido');
-                    const result = await response.json();
-
-                    document.getElementById('success-order-id').innerText = `Orden ID: ${result.orderId}`;
-                    document.getElementById('transfer-whatsapp-container').classList.remove('hidden');
-
-                    cart = [];
-                    renderCart();
-                    showView('success');
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error al procesar el pedido por transferencia.');
-                } finally {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOMContentLoaded event Fired");
-            renderGrid();
-            renderBestSellers();
-
-            // Manejar retorno de Mercado Pago
-            const urlParams = new URLSearchParams(window.location.search);
-            const status = urlParams.get('status');
-            if (status === 'success') {
-                cart = [];
-                renderCart();
-                document.getElementById('transfer-whatsapp-container').classList.add('hidden');
-                showView('success');
-            } else if (status === 'failure') {
-                alert('El pago no pudo procesarse. Por favor, intenta de nuevo.');
-                showView('checkout');
-            }
-        });
-
-        // Fallback for safety
-        window.onload = () => {
-            console.log("Window Load event Fired");
-            const grid = document.getElementById('products-grid');
-            if (grid && !grid.children.length) {
-                console.log("Grid empty on window load, rendering...");
-                renderGrid();
-            }
-        };
-    </script>
+    <script type="module" src="/src/app.js"></script>
 
     <!-- Botón Flotante WhatsApp -->
     <a href="https://wa.me/5491169348674" class="whatsapp-float" target="_blank" title="Consultas por WhatsApp">

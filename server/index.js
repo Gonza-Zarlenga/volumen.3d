@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { products as serverProducts } from './products.js';
+import { products as serverProducts, bestSellers } from './products.js';
 import nodemailer from 'nodemailer';
 
 dotenv.config();
@@ -28,6 +28,11 @@ app.use(express.json());
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, '../public'))); // Primero public para las imágenes
 app.use(express.static(path.join(__dirname, '../'))); // Luego la raíz para index.html
+
+// NUEVO: Ruta para obtener productos y mas vendidos
+app.get('/api/products', (req, res) => {
+    res.json({ products: serverProducts, bestSellers });
+});
 
 // Configuración de Nodemailer
 const transporter = nodemailer.createTransport({
