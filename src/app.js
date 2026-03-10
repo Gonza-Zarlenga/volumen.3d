@@ -26,10 +26,12 @@ function initAnimations() {
 
 let products = {};
 let bestSellers = [];
+let lampTypes = [];
 let cart = [];
 let currentProduct = null;
 let selectedQty = 1;
-let selectedColor = 'Blanco';
+let selectedColor = '';
+let selectedLamp = null;
 let currentPayment = 'transfer';
 
 let carouselInterval = null;
@@ -45,7 +47,8 @@ async function initApp() {
         const data = await response.json();
         products = data.products;
         bestSellers = data.bestSellers;
-        console.log("Data loaded from API:", { products, bestSellers });
+        lampTypes = data.lampTypes || [];
+        console.log("Data loaded from API:", { products, bestSellers, lampTypes });
 
         renderGrid();
         renderBestSellers();
@@ -78,16 +81,18 @@ function renderBestSellers() {
         const prod = products[id];
         if (!prod) return '';
         return `
-            <div class="carousel-card bg-white border border-black p-6 group cursor-pointer hover:shadow-xl transition-all duration-500" onclick="openProduct('${id}')">
+            <div class="carousel-card bg-white border border-black p-6 group cursor-pointer hover:shadow-xl transition-all duration-500 text-black" onclick="openProduct('${id}')">
                 <div class="aspect-square bg-gray-50 mb-6 overflow-hidden flex items-center justify-center relative">
                     <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-100 group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute top-0 right-0 bg-black text-white text-[8px] px-3 py-1 font-black uppercase tracking-widest">Top Sold</div>
                 </div>
-                <h3 class="font-black text-lg uppercase tracking-tighter mb-1">${prod.name}</h3>
-                <p class="mono text-[10px] text-zinc-400 uppercase mb-4">${prod.category}</p>
-                <div class="flex justify-between items-center">
-                    <span class="font-black text-sm">$${prod.price.toLocaleString()}</span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 group-hover:text-orange-400 group-hover:border-orange-400 transition-colors">Ver Producto</span>
+                <div class="flex flex-col gap-1">
+                    <h3 class="font-black text-2xl uppercase tracking-tighter group-hover:text-orange-400 transition-colors">${prod.name}</h3>
+                    <p class="mono text-[10px] text-zinc-400 uppercase tracking-widest">${prod.category}</p>
+                </div>
+                <div class="flex justify-between items-center mt-6">
+                    <span class="font-black text-lg">$${prod.price.toLocaleString()}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest border-b border-black pb-1 group-hover:border-orange-400 transition-colors">Ver Detalles</span>
                 </div>
             </div>
         `;
@@ -111,7 +116,7 @@ function renderGrid(filter = 'all') {
     console.log("Entries to render:", entries.length);
 
     grid.innerHTML = entries.map(([id, prod], index) => `
-        <div id="product-card-${id}" class="product-card p-8 flex flex-col bg-white" style="transition-delay: ${index * 100}ms" onclick="openProduct('${id}')">
+        <div id="product-card-${id}" class="product-card p-8 flex flex-col bg-white text-black" style="transition-delay: ${index * 100}ms" onclick="openProduct('${id}')">
             <div class="aspect-square bg-gray-50 mb-8 relative overflow-hidden flex items-center justify-center group">
                 <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-70 grayscale group-hover:grayscale-0 transition-all duration-500">
                 <div class="absolute top-0 left-0 mono text-[9px] bg-black text-white px-3 py-1 uppercase tracking-widest font-bold">${prod.code}</div>
@@ -150,16 +155,28 @@ function showView(view) {
     window.scrollTo(0, 0);
 }
 
+function goToCatalog() {
+    showView('home');
+    const catalog = document.getElementById('catalog');
+    if (catalog) {
+        catalog.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
 function openProduct(id) {
     const prod = products[id];
     currentProduct = prod;
     selectedQty = 1;
-    selectedColor = 'Blanco';
+    selectedColor = prod.colors ? prod.colors[0] : 'N/A';
+    selectedLamp = prod.hasLamp ? lampTypes[0] : null;
 
     document.getElementById('detail-name').innerText = prod.name;
     document.getElementById('detail-desc').innerText = prod.desc;
     document.getElementById('detail-category').innerText = `Categoría: ${prod.category} / V.03 Build`;
-    document.getElementById('detail-price').innerText = `$${prod.price.toLocaleString()}`;
+
+    // Initial price update
+    updateDetailPrice();
+
     document.getElementById('detail-material').innerText = prod.material;
     document.getElementById('detail-time').innerText = prod.time;
     document.getElementById('detail-dims').innerText = prod.dims;
@@ -169,6 +186,35 @@ function openProduct(id) {
     const mainImg = document.getElementById('main-image');
     mainImg.src = prod.images[0];
 
+    // Render Colors
+    const colorContainer = document.getElementById('detail-colors');
+    if (prod.colors) {
+        colorContainer.innerHTML = prod.colors.map((color, index) => `
+            <div onclick="selectColor('${color}', this)" 
+                 class="color-dot ${index === 0 ? 'active' : ''}" 
+                 style="background-color: ${getColorHex(color)}"
+                 title="${color}"></div>
+        `).join('');
+    } else {
+        colorContainer.innerHTML = '';
+    }
+
+    // Render Lamp Selection
+    const lampContainer = document.getElementById('lamp-selection-container');
+    const lampOptions = document.getElementById('lamp-options');
+    if (prod.hasLamp && lampTypes.length > 0) {
+        lampContainer.classList.remove('hidden');
+        lampOptions.innerHTML = lampTypes.map((type, index) => `
+            <div onclick="selectLamp('${type.id}', this)" 
+                 class="flex justify-between items-center p-4 border ${index === 0 ? 'border-black bg-black text-white' : 'border-gray-200'} cursor-pointer hover:border-black transition-all group lamp-option">
+                <span class="text-[10px] font-bold uppercase tracking-widest">${type.name}</span>
+                <span class="mono text-[10px] ${index === 0 ? 'text-gray-400' : 'text-gray-400'}">${type.price > 0 ? `+$${type.price.toLocaleString()}` : 'INCLUIDO'}</span>
+            </div>
+        `).join('');
+    } else {
+        lampContainer.classList.add('hidden');
+    }
+
     const thumbContainer = document.getElementById('thumbnails-container');
     thumbContainer.innerHTML = prod.images.map((img, index) => `
         <div onclick="updateMainImage('${img}', this)" class="thumbnail border border-black aspect-square bg-gray-50 overflow-hidden ${index === 0 ? 'active' : ''}">
@@ -177,10 +223,47 @@ function openProduct(id) {
     `).join('');
 
     document.getElementById('add-to-cart-detail').onclick = () => {
-        addToCart(id, prod.name, prod.price, selectedQty, selectedColor);
+        addToCart(id, prod.name, prod.price, selectedQty, selectedColor, selectedLamp);
     };
 
     showView('detail');
+}
+
+function getColorHex(colorName) {
+    const map = {
+        'Blanco': '#ffffff',
+        'Blanco Mate': '#f5f5f5',
+        'Negro': '#000000',
+        'Negro Mate': '#1a1a1a',
+        'Naranja': '#ff6b00',
+        'Dorado': '#d4af37',
+        'Plata': '#c0c0c0',
+        'Cobre': '#b87333',
+        'Rojo Transmue': '#8b0000',
+        'Verde Lima': '#32cd32',
+        'Verde Militar': '#4b5320',
+        'Gris Tech': '#808080'
+    };
+    return map[colorName] || '#cccccc';
+}
+
+function selectLamp(lampId, el) {
+    selectedLamp = lampTypes.find(t => t.id === lampId);
+    document.querySelectorAll('.lamp-option').forEach(opt => {
+        opt.classList.remove('border-black', 'bg-black', 'text-white');
+        opt.classList.add('border-gray-200');
+    });
+    el.classList.remove('border-gray-200');
+    el.classList.add('border-black', 'bg-black', 'text-white');
+    updateDetailPrice();
+}
+
+function updateDetailPrice() {
+    if (!currentProduct) return;
+    const basePrice = currentProduct.price;
+    const lampExtra = selectedLamp ? selectedLamp.price : 0;
+    const total = basePrice + lampExtra;
+    document.getElementById('detail-price').innerText = `$${total.toLocaleString()}`;
 }
 
 function updateMainImage(src, thumbEl) {
@@ -220,13 +303,44 @@ function toggleCart() {
     }
 }
 
-function addToCart(id, name, price, qty = 1, color = 'N/A') {
-    const cartId = `${id}-${color}`;
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu-sidebar');
+    const mobileOverlay = document.getElementById('mobile-menu-overlay');
+    const isOpen = !mobileMenu.classList.contains('translate-x-full');
+    if (isOpen) {
+        mobileMenu.classList.add('translate-x-full');
+        mobileOverlay.classList.add('hidden');
+        mobileOverlay.classList.remove('opacity-100');
+    } else {
+        mobileMenu.classList.remove('translate-x-full');
+        mobileOverlay.classList.remove('hidden');
+        setTimeout(() => mobileOverlay.classList.add('opacity-100'), 10);
+    }
+}
+
+function addToCart(id, name, price, qty = 1, color = 'N/A', lamp = null) {
+    const prod = products[id];
+    const img = prod ? prod.images[0] : '';
+    const lampPrice = lamp ? lamp.price : 0;
+    const totalPrice = price + lampPrice;
+    const lampName = lamp ? lamp.name : 'N/A';
+
+    // Unique ID for cart based on color and lamp
+    const cartId = `${id}-${color}-${lampName}`;
     const existingItem = cart.find(item => item.cartId === cartId);
     if (existingItem) {
         existingItem.qty += qty;
     } else {
-        cart.push({ cartId, id, name, price, qty, color });
+        cart.push({
+            cartId,
+            id,
+            name,
+            price: totalPrice,
+            qty,
+            color,
+            lamp: lampName,
+            image: img
+        });
     }
     renderCart();
     toggleCart();
@@ -257,7 +371,8 @@ function renderCart() {
         count += item.qty;
         return `
             <div class="flex gap-6 items-start pb-8 border-b border-gray-100 last:border-0">
-                <div class="w-16 h-16 bg-gray-50 flex-shrink-0 flex items-center justify-center relative border border-gray-100">
+                <div class="w-16 h-16 bg-gray-50 flex-shrink-0 flex items-center justify-center relative border border-gray-100 overflow-hidden">
+                     <img src="${item.image}" class="w-full h-full object-cover mix-blend-multiply">
                      <div class="absolute -top-1 -left-1 bg-black text-[8px] text-white px-1 font-bold mono">x${item.qty}</div>
                 </div>
                 <div class="flex-grow">
@@ -267,7 +382,7 @@ function renderCart() {
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
                     </div>
-                    <p class="mono text-[9px] text-gray-400 uppercase">COLOR: ${item.color}</p>
+                    <p class="mono text-[9px] text-gray-400 uppercase">COLOR: ${item.color} ${item.lamp !== 'N/A' ? ` / ${item.lamp}` : ''}</p>
                     <p class="text-xs font-black mt-3">$${(item.price * item.qty).toLocaleString()}</p>
                 </div>
             </div>
@@ -404,11 +519,14 @@ window.renderBestSellers = renderBestSellers;
 window.renderGrid = renderGrid;
 window.filterGrid = filterGrid;
 window.showView = showView;
+window.goToCatalog = goToCatalog;
 window.openProduct = openProduct;
 window.updateMainImage = updateMainImage;
 window.selectColor = selectColor;
+window.selectLamp = selectLamp;
 window.changeQty = changeQty;
 window.toggleCart = toggleCart;
+window.toggleMobileMenu = toggleMobileMenu;
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 window.renderCart = renderCart;

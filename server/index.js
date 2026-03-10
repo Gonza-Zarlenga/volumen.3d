@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { products as serverProducts, bestSellers } from './products.js';
+import { products as serverProducts, bestSellers, lampTypes } from './products.js';
 import nodemailer from 'nodemailer';
 
 dotenv.config();
@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, '../'))); // Luego la raíz para ind
 
 // NUEVO: Ruta para obtener productos y mas vendidos
 app.get('/api/products', (req, res) => {
-    res.json({ products: serverProducts, bestSellers });
+    res.json({ products: serverProducts, bestSellers, lampTypes });
 });
 
 // Configuración de Nodemailer
@@ -216,9 +216,10 @@ app.post('/webhook', async (req, res) => {
 
 // NUEVO: Ruta "Catch-all" para manejar el index.html
 // Opción con Expresión Regular pura (muy robusta)
-app.get(/.*/, (req, res) => {
+app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
+
 
 app.listen(port, () => {
     console.log(`Server running at port: ${port}`);
