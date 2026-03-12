@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 import path from 'path';
+import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { products as serverProducts, bestSellers, lampTypes } from './products.js';
 import nodemailer from 'nodemailer';
@@ -46,7 +47,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Función para enviar email de pedido
-async function sendOrderEmail(customer, items, total, method) {
+async function sendOrderEmail(customer, items, total, method, orderId, approvalLink = null) {
     const itemsHtml = items.map(item => `
         <li style="margin-bottom: 10px;">
             <strong>${item.title}</strong> x${item.quantity}<br>
@@ -55,15 +56,30 @@ async function sendOrderEmail(customer, items, total, method) {
         </li>
     `).join('');
 
+    let approvalHtml = '';
+    if (approvalLink) {
+        approvalHtml = `
+            <div style="text-align: center; margin: 30px 0; background-color: #f8f8f8; padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top:0; color:#333;">Acción Requerida</h3>
+                <p style="margin-bottom:20px;">Cuando el pedido esté pagado y en producción, aprúebalo para avisarle al cliente.</p>
+                <a href="${approvalLink}" style="background-color: #28a745; color: white; padding: 15px 30px; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block; font-size:16px;">APROBAR PEDIDO Y AVISAR AL CLIENTE</a>
+                <p style="font-size: 11px; color: #666; margin-top: 15px;">Esta acción enviará automáticamente el correo de "Pago Exitoso" a ${customer.email}.</p>
+            </div>
+            <hr>
+        `;
+    }
+
     const mailOptions = {
         from: `"VOLUMEN Orders" <${process.env.SMTP_USER}>`,
         to: process.env.NOTIFICATION_EMAIL || process.env.SMTP_USER,
-        subject: `Nuevo Pedido: ${method} - ${customer.name}`,
+        subject: `Nuevo Pedido: ${method} - ${customer.name} (#${orderId})`,
         html: `
-            <div style="font-family: sans-serif; color: #333;">
+            <div style="font-family: sans-serif; color: #333; max-width:600px; margin:0 auto;">
                 <h2>Nuevo Pedido Recibido</h2>
                 <p><strong>Método de Pago:</strong> ${method}</p>
+                <p><strong>Orden ID:</strong> #${orderId}</p>
                 <hr>
+                ${approvalHtml}
                 <h3>Datos del Cliente:</h3>
                 <p>
                     Nombre: ${customer.name}<br>
@@ -198,6 +214,19 @@ app.post('/create_preference', async (req, res) => {
         const { items, customer } = req.body;
 
         const validatedItems = items.map(item => {
+            // NUEVO: Bypass estructural para el costo de envío
+            if (item.id === 'SHIPPING-01') {
+                return {
+                    id: item.id,
+                    title: item.name,
+                    quantity: 1,
+                    unit_price: Number(item.price),
+                    currency_id: 'ARS',
+                    description: 'Costo de envío estándar',
+                    color: 'N/A'
+                };
+            }
+
             const productId = item.id || item.cartId.split('-')[0];
             const realProduct = serverProducts[productId];
 
@@ -289,6 +318,17 @@ app.post('/confirm_transfer', async (req, res) => {
 
         // Validación básica de productos de nuevo por seguridad
         const validatedItems = items.map(item => {
+            // NUEVO: Bypass para el costo de envío
+            if (item.id === 'SHIPPING-01') {
+                return {
+                    id: item.id,
+                    title: item.name,
+                    quantity: 1,
+                    unit_price: Number(item.price),
+                    color: 'N/A'
+                };
+            }
+
             const productId = item.id;
             const realProduct = serverProducts[productId];
             return {
@@ -299,9 +339,26 @@ app.post('/confirm_transfer', async (req, res) => {
             };
         });
 
-        await sendOrderEmail(customer, validatedItems, total, 'Transferencia Bancaria');
+        const protocol = req.headers['x-forwarded-proto'] || 'http';
+        const host = req.headers.host;
+        const baseUrl = `${protocol}://${host}`;
+        const approvalLink = `${baseUrl}/api/approve_order/${orderId}`;
+
+        // Guardar temporalmente en pending_orders.json
+        try {
+            const pendingFile = await fs.readFile(path.join(__dirname, 'pending_orders.json'), 'utf-8').catch(() => '{}');
+            const pendingOrders = JSON.parse(pendingFile);
+            pendingOrders[orderId] = { customer, items: validatedItems, total };
+            await fs.writeFile(path.join(__dirname, 'pending_orders.json'), JSON.stringify(pendingOrders, null, 2));
+        } catch (e) {
+            console.error('Error guardando orden pendiente:', e);
+        }
+
+        // Email interno (con botón de aprobar)
+        await sendOrderEmail(customer, validatedItems, total, 'Transferencia Bancaria', orderId, approvalLink);
         // NUEVO: Enviar mail pendiente al cliente
         await sendCustomerPendingEmail(customer, validatedItems, total, 'Transferencia Bancaria', orderId);
+
         res.json({ status: 'ok', orderId: orderId });
     } catch (error) {
         console.error('Error en transferencia:', error);
@@ -328,11 +385,24 @@ app.post('/webhook', async (req, res) => {
                     const total = paymentDetails.transaction_amount;
                     const orderId = `VL-${paymentId.toString().slice(-4)}`;
 
-                    // Enviar confirmación al cliente
-                    await sendCustomerSuccessEmail(metadata.customer, metadata.items, `$${total}`, orderId);
+                    const protocol = req.headers['x-forwarded-proto'] || 'http';
+                    const host = req.headers.host;
+                    const baseUrl = `${protocol}://${host}`;
+                    const approvalLink = `${baseUrl}/api/approve_order/${orderId}`;
 
-                    // Aviso interno para ti
-                    await sendOrderEmail(metadata.customer, metadata.items, `$${total}`, 'Mercado Pago (Webhook)');
+                    // Guardar en pending_orders.json
+                    try {
+                        const pendingFile = await fs.readFile(path.join(__dirname, 'pending_orders.json'), 'utf-8').catch(() => '{}');
+                        const pendingOrders = JSON.parse(pendingFile);
+                        pendingOrders[orderId] = { customer: metadata.customer, items: metadata.items, total: `$${total}` };
+                        await fs.writeFile(path.join(__dirname, 'pending_orders.json'), JSON.stringify(pendingOrders, null, 2));
+                    } catch (e) {
+                        console.error('Error guardando orden pendiente MP:', e);
+                    }
+
+                    // Aviso interno para ti CON BOTÓN DE APROBACIÓN MANAUL
+                    // NOTA: Eliminamos la confirmación automática al cliente de aquí.
+                    await sendOrderEmail(metadata.customer, metadata.items, `$${total}`, 'Mercado Pago (Aprobado)', orderId, approvalLink);
                 }
             }
 
@@ -342,6 +412,48 @@ app.post('/webhook', async (req, res) => {
     } catch (error) {
         console.error('Webhook error:', error);
         res.sendStatus(500);
+    }
+});
+
+// NUEVO: Ruta para aprobar pedido manualmente desde el email
+app.get('/api/approve_order/:orderId', async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const pendingFile = await fs.readFile(path.join(__dirname, 'pending_orders.json'), 'utf-8').catch(() => '{}');
+        const pendingOrders = JSON.parse(pendingFile);
+
+        if (!pendingOrders[orderId]) {
+            return res.status(404).send(`
+                <div style="font-family: sans-serif; text-align: center; padding: 50px;">
+                    <h1 style="color: #dc3545;">Error</h1>
+                    <p>El pedido <strong>#${orderId}</strong> no fue encontrado o ya ha sido aprobado anteriormente.</p>
+                </div>
+            `);
+        }
+
+        const data = pendingOrders[orderId];
+
+        // Enviar email de éxito al cliente
+        await sendCustomerSuccessEmail(data.customer, data.items, data.total, orderId);
+
+        // Borrar de pedidos pendientes
+        delete pendingOrders[orderId];
+        await fs.writeFile(path.join(__dirname, 'pending_orders.json'), JSON.stringify(pendingOrders, null, 2));
+
+        res.send(`
+            <div style="font-family: sans-serif; text-align: center; padding: 50px; background-color: #f8f9fa; min-height: 100vh;">
+                <div style="background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto;">
+                    <h1 style="color: #28a745; margin-top: 0;">¡Pedido Aprobado!</h1>
+                    <p style="font-size: 18px;">El pedido <strong>#${orderId}</strong> ha sido confirmado.</p>
+                    <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+                    <p style="color: #666;">El cliente <strong>${data.customer.email}</strong> acaba de recibir el correo automático confirmando que el pedido pasó a producción y que pronto será enviado.</p>
+                    <a href="/" style="color: #007bff; text-decoration: none; font-weight: bold; margin-top: 20px; display: inline-block;">Volver a la tienda</a>
+                </div>
+            </div>
+        `);
+    } catch (error) {
+        console.error('Error aprobando pedido:', error);
+        res.status(500).send('Error interno del servidor intentando aprobar el pedido.');
     }
 });
 

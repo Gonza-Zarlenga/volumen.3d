@@ -446,6 +446,16 @@ async function processFinalPayment() {
         return;
     }
 
+    // NUEVO: Agregar costo de envío como un ítem más para Mercado Pago y Transferencia
+    const cartWithShipping = [...cart, {
+        id: 'SHIPPING-01',
+        name: 'Envío Estándar',
+        price: 1500,
+        qty: 1,
+        color: 'N/A',
+        lamp: 'N/A'
+    }];
+
     let API_URL = '';
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         API_URL = 'http://localhost:3001';
@@ -462,7 +472,7 @@ async function processFinalPayment() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    items: cart,
+                    items: cartWithShipping,
                     customer: customerData
                 }),
             });
@@ -488,7 +498,7 @@ async function processFinalPayment() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    items: cart,
+                    items: cartWithShipping,
                     customer: customerData,
                     total: document.getElementById('checkout-total').innerText
                 }),
