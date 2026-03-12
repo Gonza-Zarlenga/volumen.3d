@@ -205,11 +205,20 @@ app.post('/create_preference', async (req, res) => {
                 throw new Error(`Producto no encontrado: ${productId}`);
             }
 
+            // Calcular precio unitario base + extra de la lámpara si aplica
+            let finalPrice = Number(realProduct.price);
+            if (item.lamp && item.lamp !== 'N/A') {
+                const lampTypeInfo = lampTypes.find(l => l.name === item.lamp);
+                if (lampTypeInfo) {
+                    finalPrice += Number(lampTypeInfo.price);
+                }
+            }
+
             return {
                 id: productId,
-                title: realProduct.name,
+                title: `${realProduct.name} ${item.lamp && item.lamp !== 'N/A' ? `(+ ${item.lamp})` : ''}`,
                 quantity: Number(item.qty),
-                unit_price: Number(realProduct.price),
+                unit_price: Number(finalPrice),
                 currency_id: 'ARS',
                 // Pasamos el color para que MP lo guarde si es necesario o para recuperarlo en el webhook
                 description: `Color: ${item.color || 'N/A'}`,
@@ -256,7 +265,13 @@ app.post('/create_preference', async (req, res) => {
             init_point: result.init_point
         });
     } catch (error) {
-        console.error('Error creating preference:', error);
+        // Logging detallado del error de Mercado Pago
+        console.error('--- ERROR DETALLADO AL CREAR PREFERENCIA ---');
+        console.error(error.message);
+        if (error.cause) console.error('CAUSA:', error.cause);
+        if (error.response) console.error('MP RESPONSE:', error.response);
+        console.error('--------------------------------------------');
+
         res.status(400).json({
             error: 'Error al validar productos o crear preferencia',
             details: error.message || error
