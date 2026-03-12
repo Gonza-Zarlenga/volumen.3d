@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { products as serverProducts, bestSellers, lampTypes } from './products.js';
@@ -86,6 +86,105 @@ async function sendOrderEmail(customer, items, total, method) {
         console.log(`Email enviado con éxito para el pedido de ${customer.name}`);
     } catch (error) {
         console.error('Error enviando email:', error);
+    }
+}
+
+// NUEVO: Email al cliente: Pago Pendiente
+async function sendCustomerPendingEmail(customer, items, total, method, orderId) {
+    const itemsHtml = items.map(item => `
+        <li style="margin-bottom: 10px;">
+            <strong>${item.title}</strong> x${item.quantity}<br>
+            Color: ${item.color || 'N/A'}<br>
+            Precio Unitario: $${item.unit_price.toLocaleString()}
+        </li>
+    `).join('');
+
+    let manualInstructions = '';
+    if (method === 'Transferencia Bancaria') {
+        manualInstructions = `
+            <div style="background-color: #f8f8f8; padding: 15px; margin: 20px 0; border-left: 4px solid #e2892a;">
+                <h4 style="margin-top: 0; color: #e2892a; text-transform: uppercase;">Importante</h4>
+                <p style="margin-bottom: 0;">Recuerda enviar el comprobante de transferencia al alias <strong>VOLUMEN.ORIGEN.3D</strong> respondiendo a este correo o mediante WhatsApp para que podamos confirmar tu pedido.</p>
+            </div>
+        `;
+    }
+
+    const mailOptions = {
+        from: `"VOLUMEN" <${process.env.SMTP_USER}>`,
+        to: customer.email,
+        subject: `Tu pedido en VOLUMEN está en proceso (#${orderId})`,
+        html: `
+            <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;">
+                <h2 style="text-transform: uppercase; font-weight: 900; letter-spacing: -1px; margin-top: 0;">VOLUMEN <span style="font-weight: 300; opacity: 0.5;">/ ORIGEN 3D</span></h2>
+                <h3 style="margin-top: 30px;">Hola ${customer.name},</h3>
+                <p>Hemos recibido tu pedido <strong>#${orderId}</strong> con éxito y está en proceso de verificación de pago mediante <strong>${method}</strong>.</p>
+                
+                ${manualInstructions}
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                
+                <h3 style="text-transform: uppercase; font-size: 14px;">Resumen del Pedido:</h3>
+                <ul style="padding-left: 20px;">${itemsHtml}</ul>
+                <p><strong>Total: ${total}</strong></p>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                
+                <p style="font-size: 12px; color: #666; text-align: center; margin-bottom: 0;">Gracias por elegir el diseño local.<br>VOLUMEN | ORIGEN 3D</p>
+            </div>
+        `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email de PENDIENTE enviado al cliente: ${customer.email}`);
+    } catch (error) {
+        console.error('Error enviando email al cliente (Pendiente):', error);
+    }
+}
+
+// NUEVO: Email al cliente: Pago Confirmado Exitoso
+async function sendCustomerSuccessEmail(customer, items, total, orderId) {
+    const itemsHtml = items.map(item => `
+        <li style="margin-bottom: 10px;">
+            <strong>${item.title}</strong> x${item.quantity}<br>
+            Color: ${item.color || 'N/A'}<br>
+            Precio Unitario: $${item.unit_price.toLocaleString()}
+        </li>
+    `).join('');
+
+    const mailOptions = {
+        from: `"VOLUMEN" <${process.env.SMTP_USER}>`,
+        to: customer.email,
+        subject: `¡Pago Confirmado! Tu pedido de VOLUMEN está en marcha (#${orderId})`,
+        html: `
+            <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;">
+                <h2 style="text-transform: uppercase; font-weight: 900; letter-spacing: -1px; margin-top: 0;">VOLUMEN <span style="font-weight: 300; opacity: 0.5;">/ ORIGEN 3D</span></h2>
+                <h3 style="margin-top: 30px;">¡Hola ${customer.name}!</h3>
+                <p>Te confirmamos que hemos recibido tu pago correspondiente al pedido <strong>#${orderId}</strong> correctamente.</p>
+                
+                <div style="background-color: #000; color: #fff; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; text-transform: uppercase; font-size: 11px; font-weight: bold; letter-spacing: 2px;">Estado: Producción Iniciada</p>
+                    <p style="margin-top: 5px; margin-bottom: 0; font-size: 13px;">Tus piezas acaban de entrar al laboratorio de impresión 3D. Te avisaremos cuando el envío esté listo.</p>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                
+                <h3 style="text-transform: uppercase; font-size: 14px;">Resumen del Pedido:</h3>
+                <ul style="padding-left: 20px;">${itemsHtml}</ul>
+                <p><strong>Total Abonado: ${total}</strong></p>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                
+                <p style="font-size: 12px; color: #666; text-align: center; margin-bottom: 0;">Gracias por apoyar el diseño local.<br>VOLUMEN | ORIGEN 3D</p>
+            </div>
+        `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email de ÉXITO enviado al cliente: ${customer.email}`);
+    } catch (error) {
+        console.error('Error enviando email al cliente (Éxito):', error);
     }
 }
 
@@ -182,6 +281,8 @@ app.post('/confirm_transfer', async (req, res) => {
         });
 
         await sendOrderEmail(customer, validatedItems, total, 'Transferencia Bancaria');
+        // NUEVO: Enviar mail pendiente al cliente
+        await sendCustomerPendingEmail(customer, validatedItems, total, 'Transferencia Bancaria', orderId);
         res.json({ status: 'ok', orderId: orderId });
     } catch (error) {
         console.error('Error en transferencia:', error);
@@ -198,14 +299,25 @@ app.post('/webhook', async (req, res) => {
         if (topic === 'payment') {
             const paymentId = query.id || req.body.data.id;
 
-            // Aquí deberías consultar MP para obtener los detalles del pago usando el ID
-            // fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, { headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` } })
-            // Por ahora asumimos que el pago fue exitoso si llega al webhook (en prod validar status === 'approved')
+            // Consultar detalles del pago desde MP
+            const paymentAPI = new Payment(client);
+            const paymentDetails = await paymentAPI.get({ id: paymentId });
 
-            // IMPORTANTE: Para obtener la metadata, necesitas buscar la preferencia o el pago.
-            // Para fines de este MVP, lo dejaremos como estructura para cuando el usuario despliegue.
+            if (paymentDetails.status === 'approved') {
+                const metadata = paymentDetails.metadata;
+                if (metadata && metadata.customer && metadata.items) {
+                    const total = paymentDetails.transaction_amount;
+                    const orderId = `VL-${paymentId.toString().slice(-4)}`;
 
-            console.log(`Webhook recibido para pago ${paymentId}`);
+                    // Enviar confirmación al cliente
+                    await sendCustomerSuccessEmail(metadata.customer, metadata.items, `$${total}`, orderId);
+
+                    // Aviso interno para ti
+                    await sendOrderEmail(metadata.customer, metadata.items, `$${total}`, 'Mercado Pago (Webhook)');
+                }
+            }
+
+            console.log(`Webhook recibido y procesado para pago ${paymentId} (Estado: ${paymentDetails.status})`);
         }
         res.sendStatus(200);
     } catch (error) {
