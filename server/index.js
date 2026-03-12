@@ -273,6 +273,9 @@ app.post('/create_preference', async (req, res) => {
                 failure: `${baseUrl}?status=failure`,
                 pending: `${baseUrl}?status=pending`,
             },
+            auto_return: "approved",
+            // NUEVO: URL donde Mercado Pago enviará las notificaciones de pago (Webhook)
+            notification_url: `${baseUrl}/webhook`,
             // Metadata crucial para el webhook
             metadata: {
                 customer: customer,
