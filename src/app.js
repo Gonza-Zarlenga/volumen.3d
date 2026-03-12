@@ -470,7 +470,7 @@ async function processFinalPayment() {
             if (!response.ok) throw new Error('Error en el servidor');
             const preference = await response.json();
 
-            const mp = new MercadoPago('APP_USR-4546c1d5-aa74-459f-b2f9-a53078b94d60', { locale: 'es-AR' });
+            const mp = new MercadoPago('APP_USR-bf5c1b60-e407-45f7-be51-d1c911aef7b9', { locale: 'es-AR' });
             mp.checkout({ preference: { id: preference.id }, autoOpen: true });
         } catch (error) {
             console.error('Error:', error);
