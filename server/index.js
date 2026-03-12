@@ -101,7 +101,8 @@ async function sendOrderEmail(customer, items, total, method, orderId, approvalL
         await transporter.sendMail(mailOptions);
         console.log(`Email enviado con éxito para el pedido de ${customer.name}`);
     } catch (error) {
-        console.error('Error enviando email:', error);
+        console.error('Error enviando email interno:', error);
+        throw error;
     }
 }
 
@@ -155,6 +156,7 @@ async function sendCustomerPendingEmail(customer, items, total, method, orderId)
         console.log(`Email de PENDIENTE enviado al cliente: ${customer.email}`);
     } catch (error) {
         console.error('Error enviando email al cliente (Pendiente):', error);
+        throw error;
     }
 }
 
@@ -201,6 +203,7 @@ async function sendCustomerSuccessEmail(customer, items, total, orderId) {
         console.log(`Email de ÉXITO enviado al cliente: ${customer.email}`);
     } catch (error) {
         console.error('Error enviando email al cliente (Éxito):', error);
+        throw error;
     }
 }
 
@@ -364,8 +367,10 @@ app.post('/confirm_transfer', async (req, res) => {
 
         res.json({ status: 'ok', orderId: orderId });
     } catch (error) {
-        console.error('Error en transferencia:', error);
-        res.status(500).json({ error: 'Error al procesar el pedido' });
+        console.error('--- ERROR EN TRANSFERENCIA BANCARIA ---');
+        console.error(error);
+        console.error('---------------------------------------');
+        res.status(500).json({ error: 'Error al procesar el pedido o enviar correos' });
     }
 });
 
@@ -413,7 +418,11 @@ app.post('/webhook', async (req, res) => {
         }
         res.sendStatus(200);
     } catch (error) {
-        console.error('Webhook error:', error);
+        console.error('--- ERROR EN WEBHOOK ---');
+        console.error('Query original:', req.query);
+        console.error('Body original:', req.body);
+        console.error('Detalle del error:', error);
+        console.error('------------------------');
         res.sendStatus(500);
     }
 });
