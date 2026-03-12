@@ -470,11 +470,11 @@ async function processFinalPayment() {
             if (!response.ok) throw new Error('Error en el servidor');
             const preference = await response.json();
 
-            const mp = new MercadoPago('APP_USR-bf5c1b60-e407-45f7-be51-d1c911aef7b9', { locale: 'es-AR' });
-            mp.checkout({ preference: { id: preference.id }, autoOpen: true });
+            // Redirección directa y segura a Mercado Pago (previene bloqueos de popups)
+            window.location.href = preference.init_point;
         } catch (error) {
             console.error('Error:', error);
-            alert('Error con Mercado Pago.');
+            alert('Error con Mercado Pago. Verifica la consola para más detalles.');
             btn.innerText = originalText;
             btn.disabled = false;
         }

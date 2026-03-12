@@ -250,7 +250,11 @@ app.post('/create_preference', async (req, res) => {
         const preference = new Preference(client);
         const result = await preference.create({ body });
 
-        res.json({ id: result.id });
+        // Devolvemos tanto el ID como el init_point (URL de cobro)
+        res.json({
+            id: result.id,
+            init_point: result.init_point
+        });
     } catch (error) {
         console.error('Error creating preference:', error);
         res.status(400).json({
