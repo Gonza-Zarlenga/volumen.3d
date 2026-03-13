@@ -9,7 +9,7 @@ export const products = {
         time: '12H 28M',
         dims: '21 x 13 cm',
         code: 'VOL 0.1',
-        images: ['/products/duna_6.jpg', '/products/duna_7.jpg', '/products/DUNA_3.jpg', '/products/DUNA_4.jpg'],
+        images: ['/products/DUNA_1.jpg', '/products/duna_7.jpg', '/products/DUNA_3.jpg', '/products/DUNA_4.jpg'],
         colors: ['Naranja', 'Verde Militar'],
         hasLamp: true
     },
