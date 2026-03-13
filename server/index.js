@@ -183,7 +183,7 @@ async function sendCustomerSuccessEmail(customer, items, total, orderId) {
                 
                 <div style="background-color: #000; color: #fff; padding: 15px; margin: 20px 0;">
                     <p style="margin: 0; text-transform: uppercase; font-size: 11px; font-weight: bold; letter-spacing: 2px;">Estado: Producción Iniciada</p>
-                    <p style="margin-top: 5px; margin-bottom: 0; font-size: 13px;">Tus piezas acaban de entrar al laboratorio de impresión 3D. Te avisaremos cuando el envío esté listo.</p>
+                    <p style="margin-top: 5px; margin-bottom: 0; font-size: 13px;">Tu compra ahora está en proceso de fabricación, te confirmaremos cuando esté lista.</p>
                 </div>
 
                 <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
@@ -321,7 +321,7 @@ app.post('/confirm_transfer', async (req, res) => {
         const { items, customer, total } = req.body;
 
         // Generar un ID de orden corto para referencia
-        const orderId = `VL-${Math.floor(1000 + Math.random() * 9000)}`;
+        const orderId = `VOL P${Math.floor(1000 + Math.random() * 9000)}`;
 
         // Validación básica de productos de nuevo por seguridad
         const validatedItems = items.map(item => {
@@ -398,7 +398,7 @@ app.post('/webhook', async (req, res) => {
                 const metadata = paymentDetails.metadata;
                 if (metadata && metadata.customer && metadata.items) {
                     const total = paymentDetails.transaction_amount;
-                    const orderId = `VL-${paymentId.toString().slice(-4)}`;
+                    const orderId = `VOL P${paymentId.toString().slice(-4)}`;
 
                     const protocol = req.headers['x-forwarded-proto'] || 'http';
                     const host = req.headers.host;
