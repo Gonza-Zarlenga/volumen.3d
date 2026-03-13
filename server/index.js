@@ -11,8 +11,8 @@ import nodemailer from 'nodemailer';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env explicitly from the root directory
-dotenv.config({ path: path.join(__dirname, '../.env') });
+// Load .env explicitly from the root directory and allow override
+dotenv.config({ path: path.join(__dirname, '../.env'), override: true });
 
 const app = express();
 const port = process.env.PORT || 3001;
