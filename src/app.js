@@ -83,7 +83,7 @@ function renderBestSellers() {
         return `
             <div class="carousel-card bg-white border border-black p-6 group cursor-pointer hover:shadow-xl transition-all duration-500 text-black" onclick="openProduct('${id}')">
                 <div class="aspect-square bg-gray-50 mb-6 overflow-hidden flex items-center justify-center relative">
-                    <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-100 group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                    <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-100 md:group-hover:scale-110 transition-transform duration-700" loading="lazy">
                     <div class="absolute top-0 right-0 bg-black text-white text-[8px] px-3 py-1 font-black uppercase tracking-widest">Top Sold</div>
                 </div>
                 <div class="flex flex-col gap-1">
@@ -118,7 +118,7 @@ function renderGrid(filter = 'all') {
     grid.innerHTML = entries.map(([id, prod], index) => `
         <div id="product-card-${id}" class="product-card p-8 flex flex-col bg-white text-black" style="transition-delay: ${index * 100}ms" onclick="openProduct('${id}')">
             <div class="aspect-square bg-gray-50 mb-8 relative overflow-hidden flex items-center justify-center group">
-                <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply opacity-70 grayscale group-hover:grayscale-0 transition-all duration-500" loading="lazy">
+                <img src="${prod.images[0]}" alt="${prod.name}" class="object-cover w-full h-full mix-blend-multiply md:opacity-70 md:grayscale md:group-hover:grayscale-0 transition-all duration-500" loading="lazy">
                 <div class="absolute top-0 left-0 mono text-[9px] bg-black text-white px-3 py-1 uppercase tracking-widest font-bold">${prod.code}</div>
             </div>
             <div class="flex justify-between items-baseline mb-3">
