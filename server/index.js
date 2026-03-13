@@ -376,12 +376,18 @@ app.post('/confirm_transfer', async (req, res) => {
 
 // Webhook de Mercado Pago
 app.post('/webhook', async (req, res) => {
-    const { query } = req;
-    const topic = query.topic || query.type;
+    const { query, body } = req;
+    const topic = query.topic || query.type || body?.type;
+    const action = body?.action;
 
     try {
-        if (topic === 'payment') {
-            const paymentId = query.id || req.body.data.id;
+        if (topic === 'payment' || action?.startsWith('payment.')) {
+            const paymentId = query.id || query['data.id'] || body?.data?.id;
+
+            if (!paymentId) {
+                console.error("No se pudo obtener el ID del pago del webhook. Ignorando.");
+                return res.sendStatus(200);
+            }
 
             // Consultar detalles del pago desde MP
             const paymentAPI = new Payment(client);
@@ -411,10 +417,14 @@ app.post('/webhook', async (req, res) => {
                     // Aviso interno para ti CON BOTÓN DE APROBACIÓN MANAUL
                     // NOTA: Eliminamos la confirmación automática al cliente de aquí.
                     await sendOrderEmail(metadata.customer, metadata.items, `$${total}`, 'Mercado Pago (Aprobado)', orderId, approvalLink);
+                } else {
+                    console.log(`Pago ${paymentId} aprobado, pero sin metadata. Ignorando.`);
                 }
             }
 
             console.log(`Webhook recibido y procesado para pago ${paymentId} (Estado: ${paymentDetails.status})`);
+        } else {
+            console.log(`Webhook recibido con topic: ${topic}, action: ${action}. Ignorado porque no es 'payment'.`);
         }
         res.sendStatus(200);
     } catch (error) {
