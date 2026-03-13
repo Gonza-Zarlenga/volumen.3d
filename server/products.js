@@ -2,7 +2,7 @@ export const products = {
     'duna': {
         id: 'duna',
         name: 'Duna',
-        price: 32000,
+        price: 34000,
         category: 'Iluminación',
         desc: 'Esta lámpara destaca por su diseño geométrico y audaz, ideal para quienes buscan una pieza de acento con personalidad. Su estructura se basa en formas orgánicas apiladas que recuerdan a un estilo space-age moderno.',
         material: 'PETG + PLA',
@@ -16,7 +16,7 @@ export const products = {
     'nexsus': {
         id: 'nexsus',
         name: 'Nexsus',
-        price: 30000,
+        price: 32000,
         category: 'Iluminación',
         desc: 'Nexsus es la pieza perfecta para quienes buscan algo diferente pero sencillo.',
         material: 'PETG',
@@ -30,7 +30,7 @@ export const products = {
     'eilish': {
         id: 'eilish',
         name: 'Eilish',
-        price: 60000,
+        price: 62000,
         category: 'Iluminación',
         desc: 'Eilish es moderna, es diferente y tiene ese look tecnológico-orgánico que solo el diseño en 3D puede lograr',
         material: 'PETG + PLA',
@@ -44,7 +44,7 @@ export const products = {
     'classic': {
         id: 'classic',
         name: 'Classic',
-        price: 30000,
+        price: 32000,
         category: 'Iluminación',
         desc: 'Textura orgánica generativa. Impermeable y resistente al impacto.',
         material: 'PETG + PLA',
@@ -63,4 +63,4 @@ export const lampTypes = [
     { id: 'rgb', name: 'LED RGB + Control', price: 16828 }
 ];
 
-export const bestSellers = ['duna', 'nexsus', 'lava'];
+export const bestSellers = ['duna', 'eilish',];
