@@ -8,10 +8,11 @@ import { fileURLToPath } from 'url';
 import { products as serverProducts, bestSellers, lampTypes } from './products.js';
 import nodemailer from 'nodemailer';
 
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load .env explicitly from the root directory
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const port = process.env.PORT || 3001;
